@@ -9,7 +9,7 @@ public interface BoardDAO {
 	public void insertArticle(ArticleBean article);
 	public int countArticles();
 	public ArticleBean selectArticle(ArticleBean article);
-	public List<ArticleBean> selectArticles(HashMap<String,Object> paramMap);
+	public List<ArticleBean> list(ArticleBean article);
 	public void updateArticle(ArticleBean article);
 	public ArticleBean deleteArticel(ArticleBean article);
 }

@@ -1,8 +1,8 @@
 package com.board.web.controller;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,19 +19,20 @@ import com.board.web.serviceImpl.BoardServiceImpl;
 @WebServlet("/board.do")
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	@SuppressWarnings("unchecked")
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		BoardService service =BoardServiceImpl.getInstance();
 		ArticleBean bean=new ArticleBean(); 
-	    String 	pageName=request.getParameter("pageName"),
-	    		path=request.getServletPath(),
+	    String 	path=request.getServletPath(),
 	    		directory =path.substring(0,path.indexOf(".")),
 	    		action=request.getParameter("action"),
+	    		pageName=request.getParameter("pageName"),
 	    		view="/WEB-INF/views/"+directory+"/"+pageName+".jsp",
 	    		title="",
 	    		content="";
 	        int pageNumber=Integer.parseInt(request.getParameter("pageNumber"));
-	    	int	pagesPerOneBlock=5,
-	    		rowsPerOnePage=5,
+	    	int	pagesPerOneBlock=5;
+	    	int	rowsPerOnePage=5,
 	    		theNumberOfRows=service.numberOfArticles(),
 	    		theNumberOfPages=(theNumberOfRows%rowsPerOnePage==0)?theNumberOfRows/rowsPerOnePage:theNumberOfRows/rowsPerOnePage+1,
 	    		startPage=pageNumber-((pageNumber-1)%pagesPerOneBlock),
@@ -40,6 +41,8 @@ public class BoardController extends HttpServlet {
 	    		endRow= pageNumber*rowsPerOnePage,
 	    	    prevBlock= startPage-pagesPerOneBlock,
 	    	    nextBlock=startPage+pagesPerOneBlock;
+	    	java.util.List<ArticleBean> list=new ArrayList<>();
+	    	System.out.println("controller pagesPerOneBlock"+pagesPerOneBlock);
 	    	System.out.println("controller theNumberOfRows"+theNumberOfRows);
 	    	System.out.println("controller theNumberOfPages "+theNumberOfPages);
 	    	System.out.println("controller startPage"+ startPage);
@@ -110,17 +113,43 @@ public class BoardController extends HttpServlet {
 			
 		case "list":
 			System.out.println("controller list enter");
-		/*	param.put("pagNo", request.getParameter("pageNo"));
-			param.put("count", service.numberOfArticles());*/
-			List<ArticleBean> list= service.findArticles(param);
-			System.out.println("controller list"+list.get(0));
-			System.out.println("controller list" +list);
-			request.setAttribute("list", list);
-			request.setAttribute("prevBlock", prevBlock);
-			request.setAttribute("endPage", endPage);
+			param.put("pageNumber", pageNumber);
+			param.put("totalCount",String.valueOf(theNumberOfRows));
+			
+			request.setAttribute("pagesPerOneBlock", pagesPerOneBlock);
+			request.setAttribute("rowsPerOnePage", rowsPerOnePage);
+			request.setAttribute("theNumberOfRows", theNumberOfRows);
+			request.setAttribute("theNumberOfPages", theNumberOfPages);
 			request.setAttribute("pageNumber", pageNumber);
+			request.setAttribute("startPage", startPage);
+			request.setAttribute("endPage", endPage);
+			request.setAttribute("startRow", startRow);
+			request.setAttribute("endRow", endRow);
+			request.setAttribute("prevBlock", prevBlock);
+			request.setAttribute("nextBlock", nextBlock);
+			
+			System.out.println("request.getParameter(startRow)"+request.getAttribute("startRow"));
+			System.out.println("request.getParameter(endRow)"+request.getParameter("endRow"));
+			String rowStrat= String.valueOf(request.getParameter("startRow"));
+			String rowEnd= String.valueOf(request.getParameter("endRow"));
+			bean.setStartRow(rowStrat);
+			System.out.println("controller rowStart: "+bean.getStartRow());
+			bean.setEndRow(rowEnd);
+			System.out.println("controller endStart: "+bean.getEndRow());
+		
+			/*int[] pageArr={(int) request.getAttribute("startRow"),(int) request.getAttribute("endRow")}; */
+		/*	HashMap<String, Object> map=new HashMap<>();
+			map.put("startRow", request.getParameter("startRow"));
+			map.put("endRow", request.getParameter("endRow"));
+			service.findArticles(map);*/
+			
+			/*int[] pageArr={Integer.parseInt(request.getParameter("startRow")),Integer.parseInt(request.getParameter("endRow"))};
+			list=service.list(pageArr);*/
+			
+			request.setAttribute("list", list);
 			request.getRequestDispatcher(view).forward(request, response);
 			break;
 		}
 	}
 }
+

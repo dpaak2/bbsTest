@@ -6,121 +6,95 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8" />
-	<script src="${js}/jquery-3.1.1.js"></script>
 	<title>Board</title>
-	<style type="text/css">
-	.hanbit-searh{
-	position: relative;
-	left: 30%;
-	padding: 30px;
-	
-	}
-	.hanbit-btn {
-    border: none;
-    color: white;
-    padding: 5px 5px;
-    font-size: 16px;
-    cursor: pointer;}
-    .write{background-color: #2196F3;} /* Blue */
-    .write:hover {background: #0b7dda;}
-	.hanbit-table{
-	border-collapse: collapse;
-	border:1px solid black;
-	font-size:13px;
-	position:relative;
-	left:30%;
-	height:40%;
-	width:45%
-	}
-	.hanbit-table tr{
-    border: 1px solid black;
-}
-	.hanbit-table td{
-    border: 1px solid black;
-}
-.hanbit-pagination{
-position:absolute;
-top:50%;
-left:40%;
-display: inline-block;
-}
-.hanbit-pagination a{
-    color: black;
-    float: left;
-    padding: 8px 16px;
-    text-decoration: none;
-}
-.hanbit-pagination a.active {
-    background-color: #4CAF50;
-    color: white;
-}
-.hanbit-pagination a:hover:not(.active) {background-color: #d14747;}
-
-	.totalNwrite{
-	position: relative;
-	left: 64%;
-	margin-bottom: 20px;
-	}
-	</style>
-
+		<meta charset="UTF-8" />
+	 	<meta name="viewport" content="width=device-width, initial-scale=1">
+  		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div class="hanbit-searh">
-<select style="height: 22px;">
-<option value="writer">작성자</option>
-<option value="title">제목</option>
-</select>
-<input type="text" placeholder="검색"/> <button>search</button>
-</div>
-<div>
-<div class="totalNwrite">
-<span> 총게시글수 ${requestScope.count}</span>
-<span><a href="${context}/board.do?action=move&pageName=write"><button class="hanbit-btn write">글쓰기</button></a></span>
-</div>
-
-<table class="hanbit-table">
-	<tr class="hanbit-table tr">
-		<td >NO</td>
-		<td >제 목</td>
-		<td >내 용</td>
-		<td>작성자</td>
-		<td>등록일</td>
-		<td>조회수</td>
-	</tr>
+<div class="container">
+	<div style="width:90%;margin:20px auto;">
+		<select class="form-control"  style="width:20%;float:left;margin-right:36px">
+			<option value="writer">작성자</option>
+			<option value="title">제목</option>
+		</select>
+		<div class="input-group" style="width:60%;float:left;margin-right:30px">
+		    <span class="input-group-addon">SEARCH</span>
+		    <input id="msg" type="text" class="form-control" style="width:100%" name="msg" placeholder="Additional Info" >
+		</div>
+		<button type="button" class="btn btn-primary" style="width:100px">SUBMIT</button>
+		<div style="margin:20px 0" >
+			<span> 총게시글수 ${requestScope.count}</span>
+			<button class="btn btn-danger" style="float:right;width:100px">글쓰기</button>
+		</div>
+	</div>
+	<%-- <a href="${context}/board.do?action=move&pageName=write"> --%>
+	 <table class="table table-hover" style="width:90%;margin:0 auto;">
+		<tr class="hanbit-table tr">
+			<td >NO</td>
+			<td >제 목</td>
+			<td >내 용</td>
+			<td>작성자</td>
+			<td>등록일</td>
+			<td>조회수</td>
+		</tr>
+		
+	<c:forEach var="article" items="${requestScope.list}">
 	
-<c:forEach var="article" items="${requestScope.list}">
-
-	<tr>
-		<td>${article.seqNo}</td>
-		<td>${article.title}</td>
-		<td>${article.content}</td>
-		<td>${article.writer}</td>
-		<td>${article.regiDate}</td>
-		<td>${article.hitCount}</td>
-	</tr>
-</c:forEach>
-</table>
+		<tr>
+			<td>${article.seqNo}</td>
+			<td>${article.title}</td>
+			<td>${article.content}</td>
+			<td>${article.writer}</td>
+			<td>${article.regiDate}</td>
+			<td>${article.hitCount}</td>
+		</tr>
+	</c:forEach>
+	</table>
+	<nav style="width:30%;margin:0 auto">
+		<ul class="pagination">
+		<c:if test="${requestScope.prevBlock  gt 0}">
+		<li>
+			<a href="${context}/board.do?action=list&pageName=main&pageNumber=${requestScope.prevBlock}">&laquo;</a>
+		</li>
+		</c:if>
+		<c:forEach varStatus="i" begin="${requestScope.startPage}" end="${requestScope.endPage}"
+			 step="1" >
+			<li>
+			<c:choose>
+				<c:when test="${i.index eq pageNumber}">
+					<a href="#"><font style="color:red">${i.index}</font></a>
+				</c:when>
+				<c:otherwise>
+					<a href="${context}/board.do?action=list&pageName=main&pageNumber=${i.index}">${i.index}</a>
+				</c:otherwise>
+			</c:choose>
+			</li>
+		</c:forEach>
+		<c:if test="${requestScope.nextBlock  le theNumberOfPages}">
+		<li>
+			<a href="${context}/board.do?action=list&pageName=main&pageNumber=${requestScope.nextBlock}">&raquo;</a>
+		</li>
+		</c:if>
+		</ul>
+	</nav> 
 </div>
-<div id="pagination" class="hanbit-pagination">
-<c:if test="${requestScope.prevBlock gt 0}">
-  <a href="${context}/board.do?action=list&pageName=main&pageNumber=${requestScope.prevBlock}">&laquo;</a>
+<span>pagesPerOneBlock: ${requestScope.pagesPerOneBlock}</span><br />
+<span>rowsPerOnePage: ${requestScope.rowsPerOnePage}</span><br />
+<span>theNumberOfRows: ${requestScope.theNumberOfRows}</span><br />
+<span>theNumberOfPages: ${requestScope.theNumberOfPages}</span><br />
+<span>pageNumber: ${requestScope.pageNumber}</span><br />
+<span>startPage: ${requestScope.startPage}</span><br />
+<span>endPage: ${requestScope.endPage}</span><br />
+<span>startRow: ${requestScope.startRow}</span><br />
+<span>endRow: ${requestScope.endRow}</span><br />
+<span>prevBlock: ${requestScope.prevBlock}</span><br />
+<span>nextBlock: ${requestScope.nextBlock}</span><br />
 
-  <a href="#">&raquo;</a>
-  </c:if>
-  <c:forEach varStatus="i" begin="${requestScope.blockStart}" end="${requestScope.endPage}" step="1">
-    <a href="#">
-    <c:choose>
-    <c:when test="${i.index eq pageNumber}">
-        <a href="#">${i.index}</a>
-    </c:when>
-    <c:otherwise>
-    	<a href="${context}/board.do?action=list&pageName=main&pageNumber=${i.index}"></a>
-    </c:otherwise>
-    </c:choose></a>
-
-  </c:forEach>
-</div>
 </body>
-
+<!-- <script>
+var pagination= "";
+</script> -->
 </html>

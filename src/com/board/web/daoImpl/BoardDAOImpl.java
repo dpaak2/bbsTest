@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.ParagraphAction;
+
 import com.board.web.dao.BoardDAO;
 import com.board.web.domain.ArticleBean;
 
@@ -22,7 +24,7 @@ public class BoardDAOImpl implements BoardDAO {
 	private BoardDAOImpl(){}
 		
 	private static final String DRIVER = "com.mysql.jdbc.Driver";
-	private static final String URL = "jdbc:mysql://127.0.0.1:3306/hanbit";
+	private static final String URL = "jdbc:mysql://203.236.209.96:3306/hanbit";
 	private static final String USER = "hanbit";
 	private static final String PW = "hanbit";
 /*	public static void main(String[] args) {
@@ -108,14 +110,19 @@ public class BoardDAOImpl implements BoardDAO {
 		return temp;
 	}
 	@Override
-	public List<ArticleBean> selectArticles(HashMap<String, Object> paramMap)  {
+	public List<ArticleBean> list (ArticleBean article)  {
 		List<ArticleBean> listSome= new ArrayList<>();
-		ArticleBean article =null;
+		article=new ArticleBean();
 		try {
 			Class.forName(DRIVER);
 			Connection conenction=DriverManager.getConnection(URL,USER,PW);
 			Statement stmt=conenction.createStatement();
-			String sql="SELECT seq_no,writer,title,content,regi_date,count FROM Board";
+			String sql="SELECT *FROM Board ORDER BY seq_no DESC LIMIT 0,5";
+			/* " /*String.format(;
+					"SELECT t2.*"
+							   +"\tFROM (SELECT ROWNUM seq,t.*"
+							   +"\tFROM (SELECT * FROM Board ORDER BY art_seq DESC) t) t2"
+							   +"\tWHERE t2.seq BETWEEN %s AND %s", String.valueOf(pramMap.get("startRow")), String.valueOf(pramMap.get("endRow")));*/
 			ResultSet rs=stmt.executeQuery(sql);
 			System.out.println("rs 값입니다"+rs);
 			while(rs.next()){
@@ -138,7 +145,6 @@ public class BoardDAOImpl implements BoardDAO {
 			System.out.println("에러발생:");
 			e.printStackTrace();
 		}
-		System.out.println("list DB: "+listSome.get(0));
 		return listSome;
 	}
 	@Override

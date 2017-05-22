@@ -37,9 +37,9 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<ArticleBean> findArticles(HashMap<String, Object> paramMap) {
+	public List<ArticleBean> list(ArticleBean article) {
 		List<ArticleBean> list =new ArrayList<>();
-		list=dao.selectArticles(paramMap);
+		list=dao.list(article);
 		System.out.println("serviceImpl list: "+list);
 		return list;
 	}

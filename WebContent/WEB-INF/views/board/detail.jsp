@@ -56,12 +56,11 @@
 	<input class="hanbit-title" type="text" value="${requestScope.title}" /><br />
 	<textarea rows="10" cols="50">${requestScope.content}</textarea><br />
 	<a href="${context}/board.do?action=delete&pageName=main"><button class="hanbit-btn delete">삭제</button><input name="deleteObject" placeholder="지울 seq_no" type="text" /></a>
-	<a href="${context}/board.do?action=move&pageName=update"><input class="hanbit-btn submit" type="button" value="수정하기" /></a>
+	<a href="${context}/board.do?action=move&pageName=update"><input class="hanbit-btn submit" type="button" value="수정하기"/></a>
 </div>
 </div>
 </form>
 </body>
 <script>
-
 </script>
 </html>
