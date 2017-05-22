@@ -117,9 +117,10 @@ public class BoardController extends HttpServlet {
 			System.out.println("controller list" +list);
 			request.setAttribute("list", list);
 			request.setAttribute("prevBlock", prevBlock);
+			request.setAttribute("endPage", endPage);
+			request.setAttribute("pageNumber", pageNumber);
 			request.getRequestDispatcher(view).forward(request, response);
 			break;
 		}
-		
 	}
 }

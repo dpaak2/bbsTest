@@ -102,15 +102,24 @@ display: inline-block;
 </c:forEach>
 </table>
 </div>
-<div class="hanbit-pagination">
+<div id="pagination" class="hanbit-pagination">
+<c:if test="${requestScope.prevBlock gt 0}">
   <a href="${context}/board.do?action=list&pageName=main&pageNumber=${requestScope.prevBlock}">&laquo;</a>
-  <a href="#">1</a>
-  <a href="#">2</a>
-  <a href="#">3</a>
-  <a href="#">4</a>
-  <a href="#">5</a>
-  <a href="#">6</a>
+
   <a href="#">&raquo;</a>
+  </c:if>
+  <c:forEach varStatus="i" begin="${requestScope.blockStart}" end="${requestScope.endPage}" step="1">
+    <a href="#">
+    <c:choose>
+    <c:when test="${i.index eq pageNumber}">
+        <a href="#">${i.index}</a>
+    </c:when>
+    <c:otherwise>
+    	<a href="${context}/board.do?action=list&pageName=main&pageNumber=${i.index}"></a>
+    </c:otherwise>
+    </c:choose></a>
+
+  </c:forEach>
 </div>
 </body>
 
