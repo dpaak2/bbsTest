@@ -57,8 +57,8 @@
 	<input class="hanbit-title" type="text" name="regiDate" placeholder="작성날짜" /><br />
 	<input class="hanbit-title" type="text" name="title"  placeholder="제목" /><br />
 	<textarea rows="10" cols="50" name="content" placeholder="작성글을 입력 하여 주세요"></textarea><br />
-	<a href="${context}/board.do?action=move&page=main"><button class="hanbit-btn cancle">취소</button></a>
-	<a href="${context}/board.do?action=write&page=detail"><input class="hanbit-btn submit" name="write" type="submit" value="작성 완료"/></a>
+	<a href="${context}/board.do?action=move&pageName=main"><button class="hanbit-btn cancle">취소</button></a>
+	<a href="${context}/board.do?action=write&pageName=detail"><input class="hanbit-btn submit" name="write" type="submit" value="작성 완료"/></a>
 	<input type="hidden" name="action" value="write" />
 	<input type="hidden" name="page" value="detail"/>
 </div>

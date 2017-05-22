@@ -45,8 +45,8 @@
 <div class="hanbit-write">
     <input class="hanbit-title" type="text" name="title" placeholder="제목" /><br />
 	<textarea rows="10" cols="50" name="content"  placeholder="작성글을 입력 하여 주세요"></textarea><br />
-	<span class="cancleBtn"><a href="${context}/board.do?action=move&page=detail"><button class="hanbit-btn cancle">취소</button></a></span>
-	<span class="submitBtn"><a href="${context}/board.do?action=update&page=detail">
+	<span class="cancleBtn"><a href="${context}/board.do?action=move&pageName=detail"><button class="hanbit-btn cancle">취소</button></a></span>
+	<span class="submitBtn"><a href="${context}/board.do?action=update&pageName=detail">
 	<input class="hanbit-btn submit" name="update" type="submit" value="수정 완료" /></a>
 	<input type="hidden" name="action" value="update" />
 	<input type="hidden" name="page" value="detail" />

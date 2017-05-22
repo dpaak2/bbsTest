@@ -76,7 +76,7 @@ display: inline-block;
 <div>
 <div class="totalNwrite">
 <span> 총게시글수 ${requestScope.count}</span>
-<span><a href="${context}/board.do?action=move&page=write"><button class="hanbit-btn write">글쓰기</button></a></span>
+<span><a href="${context}/board.do?action=move&pageName=write"><button class="hanbit-btn write">글쓰기</button></a></span>
 </div>
 
 <table class="hanbit-table">
@@ -88,6 +88,7 @@ display: inline-block;
 		<td>등록일</td>
 		<td>조회수</td>
 	</tr>
+	
 <c:forEach var="article" items="${requestScope.list}">
 
 	<tr>
@@ -96,13 +97,13 @@ display: inline-block;
 		<td>${article.content}</td>
 		<td>${article.writer}</td>
 		<td>${article.regiDate}</td>
-		<td>${article.hitCounts}</td>
+		<td>${article.hitCount}</td>
 	</tr>
 </c:forEach>
 </table>
 </div>
 <div class="hanbit-pagination">
-  <a href="#">&laquo;</a>
+  <a href="${context}/board.do?action=list&pageName=main&pageNumber=${requestScope.prevBlock}">&laquo;</a>
   <a href="#">1</a>
   <a href="#">2</a>
   <a href="#">3</a>
