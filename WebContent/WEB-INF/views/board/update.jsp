@@ -49,7 +49,7 @@
 	<span class="submitBtn"><a href="${context}/board.do?action=update&pageName=detail">
 	<input class="hanbit-btn submit" name="update" type="submit" value="수정 완료" /></a>
 	<input type="hidden" name="action" value="update" />
-	<input type="hidden" name="page" value="detail" />
+	<input type="hidden" name="pageName" value="detail" />
 </span>
 	
 </div>

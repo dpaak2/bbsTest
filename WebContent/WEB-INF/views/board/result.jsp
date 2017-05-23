@@ -6,7 +6,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<title>Board</title>
+	<title>Search Result</title>
 		<meta charset="UTF-8" />
 	 	<meta name="viewport" content="width=device-width, initial-scale=1">
   		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -14,29 +14,23 @@
   		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-<form action="${context}/board.do">
 <div class="container">
 	<div style="width:90%;margin:20px auto;">
-		<select class="form-control" name="searchOption" style="width:20%;float:left;margin-right:36px">
+		<select class="form-control"  style="width:20%;float:left;margin-right:36px">
 			<option value="writer">작성자</option>
 			<option value="title">제목</option>
 		</select>
 		<div class="input-group" style="width:60%;float:left;margin-right:30px">
 		    <span class="input-group-addon">SEARCH</span>
-		    <input id="msg" type="text" class="form-control" style="width:100%" name="searchWord" placeholder="작성자를 검색하여 주세요" >
+		    <input id="msg" type="text" class="form-control" style="width:100%" name="msg" placeholder="Additional Info" >
 		</div>
-		<input class="btn btn-primary" style="width:100px" name="search" type="submit"  value="SEARCH"/>
-		<input type="hidden" name="action" value="searchByName" />
-		<input type="hidden" name="pageName" value="main" />
-		<input type="hidden" name="pageNumber" value="1" />
-		</div>
-		</div>
-	</form>	
+		<a href="${context}/board.do?action=search&pageName=result"><button type="button" class="btn btn-primary" style="width:100px">SEARCH</button></a>
 		<div style="margin:20px 0" >
 			<span> 총게시글수 ${requestScope.count}</span>
-			<a href="${context}/board.do?action=write&pageName=write"><input class="btn btn-danger" style="float:right;width:100px" type="button" name="write" value="글쓰기"/></a>
+			<a href="${context}/board.do?action=write&pageName=write"><button class="btn btn-danger" style="float:right;width:100px">글쓰기</button></a>
 		</div>
-
+	</div>
+	<%-- <a href="${context}/board.do?action=move&pageName=write"> --%>
 	 <table class="table table-hover" style="width:90%;margin:0 auto;">
 		<tr class="hanbit-table tr">
 			<td >NO</td>
@@ -47,15 +41,15 @@
 			<td>조회수</td>
 		</tr>
 		
-	<c:forEach var="article" items="${requestScope.list}">
+	<c:forEach var="searchList" items="${requestScope.searchList}">
 	
 		<tr>
-			<td>${article.seqNo}</td>
-			<td>${article.title}</td>
-			<td>${article.content}</td>
-			<td>${article.writer}</td>
-			<td>${article.regiDate}</td>
-			<td>${article.hitCount}</td>
+			<td>${searchList.seqNo}</td>   
+			<td>${searchList.title}</td>
+			<td>${searchList.content}</td>
+			<td>${searchList.writer}</td>
+			<td>${searchList.regiDate}</td>
+			<td>${searchList.hitCounts}</td>
 		</tr>
 	</c:forEach>
 	</table>
@@ -86,19 +80,7 @@
 		</c:if>
 		</ul>
 	</nav> 
-
-<span>pagesPerOneBlock: ${requestScope.pagesPerOneBlock}</span><br />
-<span>rowsPerOnePage: ${requestScope.rowsPerOnePage}</span><br />
-<span>theNumberOfRows: ${requestScope.theNumberOfRows}</span><br />
-<span>theNumberOfPages: ${requestScope.theNumberOfPages}</span><br />
-<span>pageNumber: ${requestScope.pageNumber}</span><br />
-<span>startPage: ${requestScope.startPage}</span><br />
-<span>endPage: ${requestScope.endPage}</span><br />
-<span>startRow: ${requestScope.startRow}</span><br />
-<span>endRow: ${requestScope.endRow}</span><br />
-<span>prevBlock: ${requestScope.prevBlock}</span><br />
-<span>nextBlock: ${requestScope.nextBlock}</span><br />
-
+</div>
 
 
 </body>

@@ -5,10 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import javax.swing.text.html.HTMLDocument.HTMLReader.ParagraphAction;
+import java.util.Map;
 
 import com.board.web.dao.BoardDAO;
 import com.board.web.domain.ArticleBean;
@@ -24,7 +22,7 @@ public class BoardDAOImpl implements BoardDAO {
 	private BoardDAOImpl(){}
 		
 	private static final String DRIVER = "com.mysql.jdbc.Driver";
-	private static final String URL = "jdbc:mysql://203.236.209.96:3306/hanbit";
+	private static final String URL = "jdbc:mysql://203.236.209.96:3306/hanbit";   //다른사람 디비 연결한
 	private static final String USER = "hanbit";
 	private static final String PW = "hanbit";
 /*	public static void main(String[] args) {
@@ -86,7 +84,7 @@ public class BoardDAOImpl implements BoardDAO {
 			Class.forName(DRIVER);
 			Connection connection=DriverManager.getConnection(URL,USER,PW);
 			Statement stmt=connection.createStatement();
-			String sql="SELECT seq_no,title,content,writer,regi_date,count FROM Board WHERE seq_no='"+article.getSeqNo()+"'";
+			String sql="SELECT seq_no,title,content,writer,regi_date,count FROM Board WHERE seq_no ='"+article.getSeqNo()+"'";
 			ResultSet rs=stmt.executeQuery(sql);
 			if(rs.next()){
 				temp=new ArticleBean();
@@ -110,16 +108,21 @@ public class BoardDAOImpl implements BoardDAO {
 		return temp;
 	}
 	@Override
-	public List<ArticleBean> list (ArticleBean article)  {
+	public List<ArticleBean> list(Map<String, Object> paramMap){
 		List<ArticleBean> listSome= new ArrayList<>();
-		article=new ArticleBean();
+		ArticleBean article =new ArticleBean();
+		System.out.println("DAO IMPL 진입@@@@");
 		try {
 			Class.forName(DRIVER);
 			Connection conenction=DriverManager.getConnection(URL,USER,PW);
 			Statement stmt=conenction.createStatement();
-			String sql="SELECT *FROM Board ORDER BY seq_no DESC LIMIT 0,5";
-			/* " /*String.format(;
-					"SELECT t2.*"
+			String s=String.valueOf(paramMap.get("startRow"));
+			System.out.println("@@@2DAO starRow"+ s);
+			String e=String.valueOf(paramMap.get("endRow"));
+			System.out.println("@@@DAO endRow: "+ e);
+			String sql="SELECT * FROM (SELECT @NO := @NO + 1 AS ROWNUM, A.* FROM ( SELECT * FROM Board) A,( SELECT @NO := 0 ) B ) C WHERE C.ROWNUM BETWEEN "+s+" AND "+e+"";
+
+			/*"SELECT t2.*"
 							   +"\tFROM (SELECT ROWNUM seq,t.*"
 							   +"\tFROM (SELECT * FROM Board ORDER BY art_seq DESC) t) t2"
 							   +"\tWHERE t2.seq BETWEEN %s AND %s", String.valueOf(pramMap.get("startRow")), String.valueOf(pramMap.get("endRow")));*/
@@ -156,7 +159,7 @@ public class BoardDAOImpl implements BoardDAO {
 			String sql="UPDATE Board SET title='"+article.getTitle()+"',content='"+article.getContent()+"' WHERE seq_no='"+article.getSeqNo()+"'";
 			stmt.executeUpdate(sql);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			System.out.println("에러 발생:");
 			e.printStackTrace();
 		}
 	}
@@ -174,5 +177,51 @@ public class BoardDAOImpl implements BoardDAO {
 		}
 		return article;
 	}
-	
+	@Override
+	public List<ArticleBean> searchByName(Map<String, Object> paramMap) {
+		System.out.println("DAOIMPL searchByName enter");
+		List<ArticleBean> searchList= new ArrayList<>();
+		ArticleBean bean=null;
+		try {
+			Class.forName(DRIVER);
+			Connection connection= DriverManager.getConnection(URL,USER,PW);
+			Statement stmt= connection.createStatement();
+			String writer= (String) paramMap.get("writer");
+			System.out.println("@@@@DAO searchList writer: "+writer);
+			String sql="SELECT * FROM Board WHERE writer='"+writer+"'";
+			ResultSet rs= stmt.executeQuery(sql);
+			
+			while(rs.next()){
+				bean = new ArticleBean();
+				bean.setSeqNo(rs.getString("seq_no"));
+				System.out.println("@@@DB seachList seq_no: "+rs.getString("seq_no"));
+				bean.setWriter(rs.getString("witer"));
+				System.out.println("@@@DB seachList wwriter: "+rs.getString("writer"));
+				bean.setTitle(rs.getString("title"));
+				bean.setContent(rs.getString("content"));
+				bean.setHitCount(rs.getString("count"));
+				bean.setRegiDate(rs.getString("regi_date"));
+				searchList.add(bean);
+			}
+			
+		} catch (Exception e) {
+			System.out.println("에러발생: ");
+			e.printStackTrace();
+		}
+		System.out.println("DB searchList 값: "+ searchList.toString());
+		return searchList;
+	}
+	@Override
+	public int searchCount(Map<String, Object> paramMap) {
+		try {
+			Class.forName(DRIVER);
+			Connection connection=DriverManager.getConnection(URL,USER,PW);
+			Statement stmt= connection.createStatement();
+			
+		} catch (Exception e) {
+			System.out.println("에러발생");
+			e.printStackTrace();
+		}
+		return 0;
+	}
 }

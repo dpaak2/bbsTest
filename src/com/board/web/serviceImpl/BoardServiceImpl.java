@@ -3,6 +3,7 @@ package com.board.web.serviceImpl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.board.web.dao.BoardDAO;
 import com.board.web.daoImpl.BoardDAOImpl;
@@ -37,20 +38,29 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<ArticleBean> list(ArticleBean article) {
+	public List<ArticleBean> list(Map<String, Object> paramMap) {
+		System.out.println("service 진입@@@@@");
 		List<ArticleBean> list =new ArrayList<>();
-		list=dao.list(article);
+		list=dao.list(paramMap);
 		System.out.println("serviceImpl list: "+list);
 		return list;
 	}
 
 	@Override
 	public void updateArticle(ArticleBean article) {
+		System.out.println("service 진입@@updateArticle@@");
 		dao.updateArticle(article);
 	}
 
 	@Override
 	public ArticleBean deleteArticle(ArticleBean article) {
 	return dao.deleteArticel(article);
+	}
+	@Override
+	public List<ArticleBean> searchByName(Map<String, Object> paramMap){
+		System.out.println("service 진입@@searchList@@");
+		List<ArticleBean> rsList= new ArrayList<>();
+		rsList= dao.list(paramMap);
+		return rsList;
 	}
 }
