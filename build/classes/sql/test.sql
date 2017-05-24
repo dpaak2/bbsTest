@@ -6,7 +6,7 @@ CREATE TABLE Board(
 	content varchar(500) null,
 	writer varchar(50) null,
 	regi_date varchar(11) not null,
-	count varchar(50) NULL,
+	count varchar(50) default 0 not null,
 	primary key (seq_no)
 )DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
@@ -54,3 +54,5 @@ INSERT INTO Board(title,content,writer,regi_date,count) VALUES('히틀러를','�
 INSERT INTO Board(title,content,writer,regi_date,count) VALUES('봄바람','우리의 싶이 위하여, 말이다.','임지연','2017-05-10','11');
 INSERT INTO Board(title,content,writer,regi_date,count) VALUES('봄바람','우리의 싶이 위하여, 말이다.','정준영','2017-05-10','11');
 INSERT INTO Board(title,content,writer,regi_date,count) VALUES('참치 형','우리의 싶이 위하여, 말이다.','강동원','2017-05-10','11');
+
+select * from Board;

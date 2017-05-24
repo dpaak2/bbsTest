@@ -17,16 +17,16 @@
 <form action="${context}/board.do">
 <div class="container">
 	<div style="width:90%;margin:20px auto;">
-		<select class="form-control" name="searchOption" style="width:20%;float:left;margin-right:36px">
-			<option value="writer">작성자</option>
-			<option value="title">제목</option>
+		<select id="searchOption" class="form-control" name="searchOption" style="width:20%;float:left;margin-right:36px">
+			<option value="searchByName" >작성자</option>
+			<option value="searchByTitle">제목</option>
 		</select>
 		<div class="input-group" style="width:60%;float:left;margin-right:30px">
 		    <span class="input-group-addon">SEARCH</span>
-		    <input id="msg" type="text" class="form-control" style="width:100%" name="searchWord" placeholder="작성자를 검색하여 주세요" >
+		    <input id="msg" type="text" class="form-control" style="width:100%" name="searchWord" placeholder="작성자 나 제목을  검색하여 주세요" >
 		</div>
 		<input class="btn btn-primary" style="width:100px" name="search" type="submit"  value="SEARCH"/>
-		<input type="hidden" name="action" value="searchByName" />
+		<input type="hidden" name="action" value="search"/>
 		<input type="hidden" name="pageName" value="main" />
 		<input type="hidden" name="pageNumber" value="1" />
 		</div>
@@ -46,9 +46,7 @@
 			<td>등록일</td>
 			<td>조회수</td>
 		</tr>
-		
 	<c:forEach var="article" items="${requestScope.list}">
-	
 		<tr>
 			<td>${article.seqNo}</td>
 			<td>${article.title}</td>
@@ -58,6 +56,7 @@
 			<td>${article.hitCount}</td>
 		</tr>
 	</c:forEach>
+	
 	</table>
 	<nav style="width:30%;margin:0 auto">
 		<ul class="pagination">
@@ -97,12 +96,17 @@
 <span>startRow: ${requestScope.startRow}</span><br />
 <span>endRow: ${requestScope.endRow}</span><br />
 <span>prevBlock: ${requestScope.prevBlock}</span><br />
-<span>nextBlock: ${requestScope.nextBlock}</span><br />
+
 
 
 
 </body>
-<!-- <script>
-var pagination= "";
-</script> -->
+<script>
+var optoinSelected=$('#searchOption option:selected').val();
+
+ $("#searchOption").val();
+$(document).ready(function(){
+	
+}); 
+</script>
 </html>

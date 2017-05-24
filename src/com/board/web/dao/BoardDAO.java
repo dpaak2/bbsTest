@@ -13,6 +13,7 @@ public interface BoardDAO {
 	public ArticleBean selectArticle(ArticleBean article);
 	public List<ArticleBean> list(Map<String, Object> paramMap);
 	public List<ArticleBean> searchByName(Map<String, Object> paramMap);
+	public List<ArticleBean> searchByTitle(Map<String, Object>paramMap);
 	public void updateArticle(ArticleBean article);
-	public ArticleBean deleteArticel(ArticleBean article);
+	public ArticleBean deleteArticle(ArticleBean article);
 }

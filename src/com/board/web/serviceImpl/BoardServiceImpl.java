@@ -54,13 +54,25 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public ArticleBean deleteArticle(ArticleBean article) {
-	return dao.deleteArticel(article);
+	return dao.deleteArticle(article);
 	}
 	@Override
 	public List<ArticleBean> searchByName(Map<String, Object> paramMap){
-		System.out.println("service 진입@@searchList@@");
-		List<ArticleBean> rsList= new ArrayList<>();
-		rsList= dao.list(paramMap);
-		return rsList;
+		System.out.println("service 진입@@searchByName@@");
+		List<ArticleBean> rsListByName= new ArrayList<>();
+		rsListByName= dao.searchByName(paramMap);
+		return rsListByName;
+	}
+	@Override
+	public int numberOfResults(Map<String, Object> paramMap) {
+		return dao.searchCount(paramMap);
+	}
+	@Override
+	public List<ArticleBean> searchByTitle(Map<String, Object> paramMap) {
+		System.out.println("@@@@@@@@serviceImpl searchByTitle@@@@@@ ");
+		List<ArticleBean> rsListByTitle= new ArrayList<>();
+		rsListByTitle=dao.searchByTitle(paramMap);
+		System.out.println("searchByTitle: "+rsListByTitle.toString());
+		return rsListByTitle;
 	}
 }

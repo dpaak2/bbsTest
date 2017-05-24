@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sound.midi.Sequencer;
 
 import com.board.web.domain.ArticleBean;
 import com.board.web.service.BoardService;
@@ -136,11 +137,12 @@ public class BoardController extends HttpServlet {
 			request.setAttribute("prevBlock", prevBlock);
 			request.setAttribute("nextBlock", nextBlock);
 			request.setAttribute("list", list);
+			request.setAttribute("count", service.numberOfArticles());
 			request.getRequestDispatcher(view).forward(request, response);
 			break;
 			
-		case "searchByName":
-			System.out.println("controller searchByName entered");
+		case "search":
+			String option=request.getParameter("searchOption");
 			  int pageNumber1=Integer.parseInt(request.getParameter("pageNumber")),
 			    		pagesPerOneBlock1=5,
 			    		rowsPerOnePage1=5,
@@ -152,28 +154,59 @@ public class BoardController extends HttpServlet {
 			    		endRow1= pageNumber1*rowsPerOnePage1,
 			    	    prevBlock1= startPage1-pagesPerOneBlock1,
 			    	    nextBlock1=startPage1+pagesPerOneBlock1;
-			    	System.out.println("controller pagesPerOneBlock"+pagesPerOneBlock1);
-			    	System.out.println("controller theNumberOfRows"+theNumberOfRows1);
-			    	System.out.println("controller theNumberOfPages "+theNumberOfPages1);
-			    	System.out.println("controller startPage"+ startPage1);
-			    	System.out.println("controller endPage"+endPage1);
-			    	System.out.println("controller startRow"+startRow1);
-			    	System.out.println("controller endRow"+endRow1);
-			    	System.out.println("controller prevBlock"+prevBlock1);
-			    	System.out.println("controller nextBlock"+nextBlock1);
-			Map<String, Object> searchMap = new HashMap<>();
-			java.util.List<ArticleBean> searchList=new ArrayList<>();
-			String searchWriter=request.getParameter("searchWord");
-			System.out.println("controller searchWriter"+ searchWriter);
-			searchMap.put("writer", searchWriter);
-			System.out.println("controller map writer: "+ searchMap.toString());
-			searchMap.put("startRow", startRow1);
-			searchMap.put("endRow", endRow1);
-			searchList=service.searchByName(searchMap);
-			request.setAttribute("searchList", searchList);
-			request.getRequestDispatcher(view).forward(request, response);
-			break;
-		case"searchByTitle":break;
+			if(option.equals("searchByName")){
+				System.out.println("controller searchByName entered");
+				
+				 /*   	System.out.println("controller pagesPerOneBlock"+pagesPerOneBlock1);
+				    	System.out.println("controller theNumberOfRows"+theNumberOfRows1);
+				    	System.out.println("controller theNumberOfPages "+theNumberOfPages1);
+				    	System.out.println("controller startPage"+ startPage1);
+				    	System.out.println("controller endPage"+endPage1);
+				    	System.out.println("controller startRow"+startRow1);
+				    	System.out.println("controller endRow"+endRow1);
+				    	System.out.println("controller prevBlock"+prevBlock1);
+				    	System.out.println("controller nextBlock"+nextBlock1);*/
+				Map<String, Object> searchMap = new HashMap<>();
+				java.util.List<ArticleBean> searchListByName=new ArrayList<>();
+				String searchWriter=request.getParameter("searchWord");
+				System.out.println("controller searchWriter"+ searchWriter);
+				searchMap.put("writer", searchWriter);
+				searchMap.put("startRow", startRow1);
+				searchMap.put("endRow", endRow1);
+				System.out.println("controller map writer: "+ searchMap.toString());
+				searchListByName=service.searchByName(searchMap);
+				System.out.println("controller searchList: "+ searchListByName.toString());
+				request.setAttribute("count", service.numberOfResults(searchMap));
+				request.setAttribute("list", searchListByName);
+				request.getRequestDispatcher(view).forward(request, response);
+				break;
+			}else{
+				System.out.println("controller searchByName entered");
+			
+				    	System.out.println("controller pagesPerOneBlock"+pagesPerOneBlock1);
+				    	System.out.println("controller theNumberOfRows"+theNumberOfRows1);
+				    	System.out.println("controller theNumberOfPages "+theNumberOfPages1);
+				    	System.out.println("controller startPage"+ startPage1);
+				    	System.out.println("controller endPage"+endPage1);
+				    	System.out.println("controller startRow"+startRow1);
+				    	System.out.println("controller endRow"+endRow1);
+				    	System.out.println("controller prevBlock"+prevBlock1);
+				    	System.out.println("controller nextBlock"+nextBlock1);
+				Map<String, Object> searchMapByTitle = new HashMap<>();
+				java.util.List<ArticleBean> searchListTitle=new ArrayList<>();
+				String searchTitle=request.getParameter("searchWord");
+				System.out.println("controller searchTitle"+ searchTitle);
+				searchMapByTitle.put("title", searchTitle);
+				searchMapByTitle.put("startRow", startRow1);
+				searchMapByTitle.put("endRow", endRow1);
+				System.out.println("controller map title: "+ searchMapByTitle.toString());
+				searchListTitle=service.searchByName(searchMapByTitle);
+				System.out.println("controller searchList: "+ searchListTitle.toString());
+				request.setAttribute("count", service.numberOfResults(searchMapByTitle));
+				request.setAttribute("list", searchListTitle);
+				request.getRequestDispatcher(view).forward(request, response);
+				break;
+			}
 		}
 	}
 }

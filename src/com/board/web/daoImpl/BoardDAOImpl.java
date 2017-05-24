@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -111,7 +112,7 @@ public class BoardDAOImpl implements BoardDAO {
 	public List<ArticleBean> list(Map<String, Object> paramMap){
 		List<ArticleBean> listSome= new ArrayList<>();
 		ArticleBean article =new ArticleBean();
-		System.out.println("DAO IMPL 진입@@@@");
+		System.out.println("DAO IMPL 진입@@@@list");
 		try {
 			Class.forName(DRIVER);
 			Connection conenction=DriverManager.getConnection(URL,USER,PW);
@@ -127,21 +128,21 @@ public class BoardDAOImpl implements BoardDAO {
 							   +"\tFROM (SELECT * FROM Board ORDER BY art_seq DESC) t) t2"
 							   +"\tWHERE t2.seq BETWEEN %s AND %s", String.valueOf(pramMap.get("startRow")), String.valueOf(pramMap.get("endRow")));*/
 			ResultSet rs=stmt.executeQuery(sql);
-			System.out.println("rs 값입니다"+rs);
+			/*System.out.println("rs 값입니다"+rs);*/
 			while(rs.next()){
 				article=new ArticleBean();
 				article.setSeqNo(rs.getString("seq_no"));
-				System.out.println("rs.getString(seq_no)"+rs.getString("seq_no"));
-				article.setTitle(rs.getString("title"));
-				System.out.println("rs.getString (title)"+rs.getString("title"));
-				article.setContent(rs.getString("content"));
-				System.out.println("rs.content: "+ rs.getString("content"));
+/*				System.out.println("rs.getString(seq_no)"+rs.getString("seq_no"));
+*/				article.setTitle(rs.getString("title"));
+/*				System.out.println("rs.getString (title)"+rs.getString("title"));
+*/				article.setContent(rs.getString("content"));
+				/*System.out.println("rs.content: "+ rs.getString("content"));*/
 				article.setWriter(rs.getString("writer"));
-				System.out.println("rs.writer: "+rs.getString("writer"));
+				/*System.out.println("rs.writer: "+rs.getString("writer"));*/
 				article.setRegiDate(rs.getString("regi_date"));
-				System.out.println("rs.regi_date: "+rs.getString("regi_date"));
+				/*System.out.println("rs.regi_date: "+rs.getString("regi_date"));*/
 				article.setHitCount(rs.getString("count"));
-				System.out.println("rs.count: "+rs.getString("count"));
+				/*System.out.println("rs.count: "+rs.getString("count"));*/
 				listSome.add(article);
 			} 
 		} catch (Exception e) {
@@ -164,7 +165,8 @@ public class BoardDAOImpl implements BoardDAO {
 		}
 	}
 	@Override
-	public ArticleBean deleteArticel(ArticleBean article) {
+	public ArticleBean deleteArticle(ArticleBean article) {
+		
 		try {
 			Class.forName(DRIVER);
 			Connection connection=DriverManager.getConnection(URL,USER,PW);
@@ -180,7 +182,7 @@ public class BoardDAOImpl implements BoardDAO {
 	@Override
 	public List<ArticleBean> searchByName(Map<String, Object> paramMap) {
 		System.out.println("DAOIMPL searchByName enter");
-		List<ArticleBean> searchList= new ArrayList<>();
+		List<ArticleBean> searchByName= new ArrayList<>();
 		ArticleBean bean=null;
 		try {
 			Class.forName(DRIVER);
@@ -189,39 +191,84 @@ public class BoardDAOImpl implements BoardDAO {
 			String writer= (String) paramMap.get("writer");
 			System.out.println("@@@@DAO searchList writer: "+writer);
 			String sql="SELECT * FROM Board WHERE writer='"+writer+"'";
+			System.out.println("DAO searchByName writer: " + writer);
 			ResultSet rs= stmt.executeQuery(sql);
 			
 			while(rs.next()){
 				bean = new ArticleBean();
 				bean.setSeqNo(rs.getString("seq_no"));
-				System.out.println("@@@DB seachList seq_no: "+rs.getString("seq_no"));
-				bean.setWriter(rs.getString("witer"));
-				System.out.println("@@@DB seachList wwriter: "+rs.getString("writer"));
+				System.out.println("@@@ DB searchByName seq_no: "+rs.getString("seq_no"));
+				bean.setWriter(rs.getString("writer"));
+				System.out.println("@@@ DB searchByName writer: "+rs.getString("writer"));
 				bean.setTitle(rs.getString("title"));
 				bean.setContent(rs.getString("content"));
 				bean.setHitCount(rs.getString("count"));
 				bean.setRegiDate(rs.getString("regi_date"));
-				searchList.add(bean);
+				searchByName.add(bean);
 			}
-			
 		} catch (Exception e) {
 			System.out.println("에러발생: ");
 			e.printStackTrace();
 		}
-		System.out.println("DB searchList 값: "+ searchList.toString());
-		return searchList;
+		System.out.println("DB searchList 값: "+ searchByName.toString());
+		return searchByName;
+	}
+	@Override
+	public List<ArticleBean> searchByTitle(Map<String, Object> paramMap) {
+		List<ArticleBean> searchByTitleList=new ArrayList<>();
+		Map<String, Object> searchByTitleMap= new HashMap<>();
+		ArticleBean temp= null;
+		try {
+			Class.forName(DRIVER);
+			Connection connection=DriverManager.getConnection(URL,USER,PW);
+			Statement stmt=connection.createStatement();
+			String title=(String) searchByTitleMap.get("title");
+			String sql="SELECT * FORM Board WHERE title='"+title+"'";
+			System.out.println("DAO searchByTitle title: "+title);
+			ResultSet rs=stmt.executeQuery(sql);
+			if(rs.next()){
+				temp = new ArticleBean();
+				temp.setSeqNo(rs.getString("seq_no"));
+				System.out.println("@@@ DB searchByName seq_no: "+rs.getString("seq_no"));
+				temp.setWriter(rs.getString("writer"));
+				System.out.println("@@@ DB searchByName writer: "+rs.getString("writer"));
+				temp.setTitle(rs.getString("title"));
+				temp.setContent(rs.getString("content"));
+				temp.setHitCount(rs.getString("count"));
+				temp.setRegiDate(rs.getString("regi_date"));
+				searchByTitleList.add(temp);
+			}
+		} catch (Exception e) {
+			System.out.println("에러발생: ");
+			e.printStackTrace();
+		}
+		System.out.println("DAO searchByTitleList: "+searchByTitleList.toString());
+		return searchByTitleList;
 	}
 	@Override
 	public int searchCount(Map<String, Object> paramMap) {
+		int searchCount=0;
 		try {
 			Class.forName(DRIVER);
 			Connection connection=DriverManager.getConnection(URL,USER,PW);
 			Statement stmt= connection.createStatement();
-			
+			String searchWriter= (String) paramMap.get("writer");
+			String searchTitle=(String) paramMap.get("title");
+			String sql="SELECT COUNT(*) AS qty FROM Board LIKE %"+searchTitle+"% ";
+			/*if(searchWriter.equals(null)){
+				sql="SELECT COUNT(*) AS qty FROM Board LIKE %"+searchTitle+"% ";
+			}else{
+				
+			}*/
+			ResultSet rs=stmt.executeQuery(sql);
+			if(rs.next()){
+				searchCount=rs.getInt("qty");
+			}
 		} catch (Exception e) {
 			System.out.println("에러발생");
 			e.printStackTrace();
 		}
-		return 0;
+		return searchCount;
 	}
+
 }

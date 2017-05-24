@@ -1,6 +1,6 @@
 SELECT * FROM Board WHERE seq_no='1';
 SELECT COUNT(*) AS count FROM Board;
-
+select * from Board;
 SELECT seq_no,title,writer,regi_date,count FROM Board WHERE seq_no='1';
 SELECT seq_no,title,writer,count,regi_date FROM Board WHERE seq_no='2';
 SELECT seq_no,title,content,writer,regi_date,count FROM Board WHERE seq_no='1';
@@ -10,7 +10,14 @@ UPDATE Board SET title='안녕 사랑이',content='사랑이 사랑스러웡 ㅋ
 SELECT seq_no,writer,title,content,regi_date,count FROM Board;
 
 SELECT * FROM Board WHERE writer='홍길동';
-SELECT *
+SELECT COUNT (writer='홍길동') AS count FROM Board;
+SELECT COUNT (*) FROM Board WHERE writer='홍길동';
+SELECT COUNT(*) AS qty  FROM Board WHERE writer='홍길동';
+
+
+SELECT COUNT(*) AS qty  FROM Board WHERE writer ;
+SELECT * FROM Board WHERE title LIKE "%뼈 쓸쓸한 %";
+SELECT * FROM Board WHERE title LIKE "%길동이%";
 FROM Board
 ORDER BY seq_no DESC
 LIMIT 0, 5;
