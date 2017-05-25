@@ -14,9 +14,10 @@ SELECT COUNT (writer='홍길동') AS count FROM Board;
 SELECT COUNT (*) FROM Board WHERE writer='홍길동';
 SELECT COUNT(*) AS qty  FROM Board WHERE writer='홍길동';
 SELECT * FROM Board WHERE title LIKE '%봄바람%';
+SELECT * FROM Board WHERE title='북치기 박치기';
 
 UPDATE Board SET title='"+article.getTitle()+"',content='"+article.getContent()+"' WHERE seq_no='"+article.getSeqNo()+';
-UPDATE Board  SET writer='나갱이',content='칼퇴는 나의 소망',regi_date='2017-05-23',count='29' WHERE seq_no='48';
+UPDATE Board  SET title='반석어린이집', writer='나갱이',content='칼퇴는 나의 소망',regi_date='2017-05-23',count='29' WHERE seq_no='48';
 UPDATE Board  SET writer='찌노닝',content='퇴사는 나의 소망',regi_date='2017-05-24',count='29' WHERE seq_no='41';
 UPDATE Board  SET writer='닝노찌',content='하지만 나는 집에서 일하고 있지... 벗어날수가 없어!!',regi_date='2017-05-24',count='29' WHERE seq_no='39';
 

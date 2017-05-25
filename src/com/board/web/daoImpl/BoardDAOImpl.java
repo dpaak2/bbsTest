@@ -234,12 +234,12 @@ public class BoardDAOImpl implements BoardDAO {
 			//String sql2="SELECT * FROM Board WHERE writer LIKE '%"+writer+"%'";
 			System.out.println("DAO searchByTitle title: "+title);
 			ResultSet rs=stmt.executeQuery(sql);
-			if(rs.next()){
+			while(rs.next()){
 				temp = new ArticleBean();
 				temp.setSeqNo(rs.getString("seq_no"));
-				System.out.println("@@@ DB searchByName seq_no: "+rs.getString("seq_no"));
+				System.out.println("@@@ DB searchByTitle seq_no: "+rs.getString("seq_no"));
 				temp.setWriter(rs.getString("writer"));
-				System.out.println("@@@ DB searchByName writer: "+rs.getString("writer"));
+				System.out.println("@@@ DB searchByTitle writer: "+rs.getString("writer"));
 				temp.setTitle(rs.getString("title"));
 				temp.setContent(rs.getString("content"));
 				temp.setHitCount(rs.getString("count"));
