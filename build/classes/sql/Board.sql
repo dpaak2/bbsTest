@@ -8,12 +8,17 @@ SELECT * FROM Board;
 DELETE  FROM Board WHERE seq_no='43';
 UPDATE Board SET title='안녕 사랑이',content='사랑이 사랑스러웡 ㅋㅋ' WHERE seq_no='43';
 SELECT seq_no,writer,title,content,regi_date,count FROM Board;
-
-SELECT * FROM Board WHERE writer='홍길동';
+SELECT COUNT(*) AS qty FROM Board WHERE writer LIKE '%홍길동%';
+SELECT * FROM Board WHERE title='봄바람';
 SELECT COUNT (writer='홍길동') AS count FROM Board;
 SELECT COUNT (*) FROM Board WHERE writer='홍길동';
 SELECT COUNT(*) AS qty  FROM Board WHERE writer='홍길동';
+SELECT * FROM Board WHERE title LIKE '%봄바람%';
 
+UPDATE Board SET title='"+article.getTitle()+"',content='"+article.getContent()+"' WHERE seq_no='"+article.getSeqNo()+';
+UPDATE Board  SET writer='나갱이',content='칼퇴는 나의 소망',regi_date='2017-05-23',count='29' WHERE seq_no='48';
+UPDATE Board  SET writer='찌노닝',content='퇴사는 나의 소망',regi_date='2017-05-24',count='29' WHERE seq_no='41';
+UPDATE Board  SET writer='닝노찌',content='하지만 나는 집에서 일하고 있지... 벗어날수가 없어!!',regi_date='2017-05-24',count='29' WHERE seq_no='39';
 
 SELECT COUNT(*) AS qty  FROM Board WHERE writer ;
 SELECT * FROM Board WHERE title LIKE "%뼈 쓸쓸한 %";

@@ -65,6 +65,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 	@Override
 	public int numberOfResults(Map<String, Object> paramMap) {
+		System.out.println("serviceImpl searchCount: "+ dao.searchCount(paramMap));
 		return dao.searchCount(paramMap);
 	}
 	@Override

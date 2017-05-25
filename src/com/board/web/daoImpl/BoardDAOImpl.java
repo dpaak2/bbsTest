@@ -190,9 +190,14 @@ public class BoardDAOImpl implements BoardDAO {
 			Statement stmt= connection.createStatement();
 			String writer= (String) paramMap.get("writer");
 			System.out.println("@@@@DAO searchList writer: "+writer);
-			String sql="SELECT * FROM Board WHERE writer='"+writer+"'";
+			String startRow=String.valueOf(paramMap.get("startRow"));
+			System.out.println("@@@2DAO starRow"+ startRow);
+			String endRow=String.valueOf(paramMap.get("endRow"));
+			System.out.println("@@@DAO endRow: "+ endRow);
+			String sql="SELECT * FROM (SELECT @NO := @NO + 1 AS ROWNUM, A.* FROM ( SELECT * FROM Board) A,( SELECT @NO := 0 ) B ) C WHERE C.ROWNUM BETWEEN "+startRow+" AND "+endRow+"";
+			String sql2="SELECT * FROM Board WHERE writer LIKE '%"+writer+"%'";
 			System.out.println("DAO searchByName writer: " + writer);
-			ResultSet rs= stmt.executeQuery(sql);
+			ResultSet rs= stmt.executeQuery(sql2);
 			
 			while(rs.next()){
 				bean = new ArticleBean();
@@ -218,12 +223,15 @@ public class BoardDAOImpl implements BoardDAO {
 		List<ArticleBean> searchByTitleList=new ArrayList<>();
 		Map<String, Object> searchByTitleMap= new HashMap<>();
 		ArticleBean temp= null;
+		searchByTitleMap=paramMap;
 		try {
 			Class.forName(DRIVER);
 			Connection connection=DriverManager.getConnection(URL,USER,PW);
 			Statement stmt=connection.createStatement();
 			String title=(String) searchByTitleMap.get("title");
-			String sql="SELECT * FORM Board WHERE title='"+title+"'";
+			System.out.println("DAO seachByTitleMap : "+searchByTitleMap.toString());
+			String sql="SELECT * FROM Board WHERE title LIKE '%"+title+"%'";
+			//String sql2="SELECT * FROM Board WHERE writer LIKE '%"+writer+"%'";
 			System.out.println("DAO searchByTitle title: "+title);
 			ResultSet rs=stmt.executeQuery(sql);
 			if(rs.next()){
@@ -253,13 +261,15 @@ public class BoardDAOImpl implements BoardDAO {
 			Connection connection=DriverManager.getConnection(URL,USER,PW);
 			Statement stmt= connection.createStatement();
 			String searchWriter= (String) paramMap.get("writer");
+			System.out.println("DAO searchCount searchWriter: "+searchWriter);
 			String searchTitle=(String) paramMap.get("title");
+			System.out.println("DAO searchCount searchTitle: "+ searchTitle);
 			String sql="SELECT COUNT(*) AS qty FROM Board LIKE %"+searchTitle+"% ";
-			/*if(searchWriter.equals(null)){
-				sql="SELECT COUNT(*) AS qty FROM Board LIKE %"+searchTitle+"% ";
+			if(searchWriter.equals(true)){
+				sql="SELECT COUNT(*) AS qty FROM Board WHERE writer LIKE '"+searchTitle+"%'";
 			}else{
-				
-			}*/
+				sql="SELECT COUNT(*) AS qty FROM Board lIKE '%"+searchWriter+"%'";
+			}
 			ResultSet rs=stmt.executeQuery(sql);
 			if(rs.next()){
 				searchCount=rs.getInt("qty");
@@ -268,6 +278,7 @@ public class BoardDAOImpl implements BoardDAO {
 			System.out.println("에러발생");
 			e.printStackTrace();
 		}
+		System.out.println("DAO searchCount: "+ searchCount);
 		return searchCount;
 	}
 
