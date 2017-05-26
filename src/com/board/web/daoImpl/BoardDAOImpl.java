@@ -50,8 +50,17 @@ public class BoardDAOImpl implements BoardDAO {
 			Class.forName(DRIVER);
 			Connection connection=DriverManager.getConnection(URL,USER,PW);
 			Statement stmt=connection.createStatement();
+			String insertWriter=article.getTitle();
+			String insertTitle=article.getWriter();
+			String insertContent=article.getContent();
+			String insertRegidate=article.getRegiDate();
+			System.out.println("DAO insertWriter "+insertWriter);
+			System.out.println("DAO insertTitle "+insertTitle);
+			System.out.println("DAO insertContent "+insertContent);
+			System.out.println("DAO insertRegidate "+insertRegidate);
+			
 			String sql="INSERT INTO Board (title,writer,content,regi_date) VALUES ('"
-					+article.getTitle()+"','"+article.getWriter()+"','"+article.getContent()+"','"+article.getRegiDate()+"')";
+					+insertWriter+"','"+insertTitle+"','"+insertContent+"','"+insertRegidate+"')";
 			stmt.executeUpdate(sql);
 		} catch (Exception e) {
 			System.out.println("에러 발생");
@@ -166,36 +175,47 @@ public class BoardDAOImpl implements BoardDAO {
 	}
 	@Override
 	public ArticleBean deleteArticle(ArticleBean article) {
-		
+		ArticleBean deleteBean=new ArticleBean();
 		try {
 			Class.forName(DRIVER);
 			Connection connection=DriverManager.getConnection(URL,USER,PW);
 			Statement stmt=connection.createStatement();
-			String sql="DELETE  FROM Board WHERE seq_no='"+article.getSeqNo()+"'";
+			String sql="DELETE  FROM Board WHERE writer='"+article.getSeqNo()+"'";
+			System.out.println("DAO DELETE seq_no: "+ article.getSeqNo());
 			stmt.executeUpdate(sql);
 		} catch (Exception e) {
 			System.out.println("에러발생");
 			e.printStackTrace();
 		}
-		return article;
+		return deleteBean;
 	}
 	@Override
 	public List<ArticleBean> searchByName(Map<String, Object> paramMap) {
 		System.out.println("DAOIMPL searchByName enter");
-		List<ArticleBean> searchByName= new ArrayList<>();
+		List<ArticleBean> searchByName= new ArrayList<>();;
 		ArticleBean bean=null;
 		try {
 			Class.forName(DRIVER);
 			Connection connection= DriverManager.getConnection(URL,USER,PW);
 			Statement stmt= connection.createStatement();
-			String writer= (String) paramMap.get("writer");
+			String writer= (String) paramMap.get("searchWord");
 			System.out.println("@@@@DAO searchList writer: "+writer);
 			String startRow=String.valueOf(paramMap.get("startRow"));
 			System.out.println("@@@2DAO starRow"+ startRow);
 			String endRow=String.valueOf(paramMap.get("endRow"));
 			System.out.println("@@@DAO endRow: "+ endRow);
-			String sql="SELECT * FROM (SELECT @NO := @NO + 1 AS ROWNUM, A.* FROM ( SELECT * FROM Board) A,( SELECT @NO := 0 ) B ) C WHERE C.ROWNUM BETWEEN "+startRow+" AND "+endRow+"";
-			String sql2="SELECT * FROM Board WHERE writer LIKE '%"+writer+"%'";
+			String sql2=
+					"SELECT * "
+					+"FROM ( "
+					+"SELECT @NO := @NO + 1 AS ROWNUM, A.* "
+					+"FROM"
+					+"  ("
+					+"   SELECT * FROM Board WHERE writer LIKE '%"+writer+"%'"
+					+"  ) A,"
+					+"  ( SELECT @NO := 0 ) B" 
+					+") C "
+					+"WHERE C.ROWNUM BETWEEN "+startRow+" AND "+endRow+"";
+					
 			System.out.println("DAO searchByName writer: " + writer);
 			ResultSet rs= stmt.executeQuery(sql2);
 			
@@ -228,7 +248,7 @@ public class BoardDAOImpl implements BoardDAO {
 			Class.forName(DRIVER);
 			Connection connection=DriverManager.getConnection(URL,USER,PW);
 			Statement stmt=connection.createStatement();
-			String title=(String) searchByTitleMap.get("title");
+			String title=(String) searchByTitleMap.get("searchWord");
 			System.out.println("DAO seachByTitleMap : "+searchByTitleMap.toString());
 			String sql="SELECT * FROM Board WHERE title LIKE '%"+title+"%'";
 			//String sql2="SELECT * FROM Board WHERE writer LIKE '%"+writer+"%'";
@@ -260,16 +280,13 @@ public class BoardDAOImpl implements BoardDAO {
 			Class.forName(DRIVER);
 			Connection connection=DriverManager.getConnection(URL,USER,PW);
 			Statement stmt= connection.createStatement();
-			String searchWriter= (String) paramMap.get("writer");
+			/*String searchWriter= (String) paramMap.get("writer");
 			System.out.println("DAO searchCount searchWriter: "+searchWriter);
 			String searchTitle=(String) paramMap.get("title");
-			System.out.println("DAO searchCount searchTitle: "+ searchTitle);
-			String sql="SELECT COUNT(*) AS qty FROM Board LIKE %"+searchTitle+"% ";
-			if(searchWriter.equals(true)){
-				sql="SELECT COUNT(*) AS qty FROM Board WHERE writer LIKE '"+searchTitle+"%'";
-			}else{
-				sql="SELECT COUNT(*) AS qty FROM Board lIKE '%"+searchWriter+"%'";
-			}
+			System.out.println("DAO searchCount searchTitle: "+ searchTitle);*/
+			String sql="SELECT COUNT(*) AS qty FROM Board WHERE "+paramMap.get("searchType")+" LIKE '%"+paramMap.get("searchWord")+"%'";
+			System.out.println("DAO SearchCount type: "+paramMap.get("searchType"));
+			System.out.println("DAO SearchCount searchWord: "+paramMap.get("searchWord"));
 			ResultSet rs=stmt.executeQuery(sql);
 			if(rs.next()){
 				searchCount=rs.getInt("qty");

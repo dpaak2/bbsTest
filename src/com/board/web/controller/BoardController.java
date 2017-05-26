@@ -17,58 +17,77 @@ import com.board.web.service.BoardService;
 import com.board.web.serviceImpl.BoardServiceImpl;
 
 
-
+@SuppressWarnings("unused")
 @WebServlet("/board.do")
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private static final String UPLOAD_DIRECTORY = "upload";
+	private static final String VIEW_DIRECTORY   = "/WEB-INF/views/";
+	private static final String SAVE_PATH   = "C:\\Users\\hb2000\\JavaProjects\\eclipse4class14\\workspace\\noticeboard1705mvc\\WebContent\\resources\\upload\\";
+	private static final String SAVE_DIRECTORY   = "upload"; 
+	private static final int MAX_MEMORY_SIZE     = 1024 * 1024 * 3;  // 3MB
+	private static final int MAX_FILE_SIZE      = 1024 * 1024 * 40; // 40MB
+	private static final int MAX_REQUEST_SIZE   = 1024 * 1024 * 50; // 50MB
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		BoardService service =BoardServiceImpl.getInstance();
 		ArticleBean bean=new ArticleBean(); 
 	    String 	path=request.getServletPath(),
 	    		directory =path.substring(0,path.indexOf(".")),
 	    		action=request.getParameter("action"),
+	    		foo = request.getParameter("pageNumber"),
 	    		pageName=request.getParameter("pageName"),
-	    		view="/WEB-INF/views/"+directory+"/"+pageName+".jsp",
 	    		title="",
 	    		content="";
-	  
+	    action=(action == null) ? "list" : action;
+	    foo=(foo==null)?"0":foo;
+	    int pageNumber = Integer.parseInt(foo);
 		System.out.println("BoardController 진입");
 		System.out.println("controller action:"+ request.getParameter("action"));
-		/*java.util.HashMap<String, Object> param=new HashMap<>();*/
-		
+		int pagesPerOneBlock = 5, rowsPerOnePage = 5, theNumberOfRows = service.numberOfArticles(),
+				theNumberOfPages = (theNumberOfRows % rowsPerOnePage == 0) ? theNumberOfRows / rowsPerOnePage
+						: theNumberOfRows / rowsPerOnePage + 1,
+				startPage = pageNumber - ((pageNumber - 1) % pagesPerOneBlock),
+				endPage = ((startPage + rowsPerOnePage - 1) < theNumberOfPages) ? startPage + pagesPerOneBlock - 1
+						: theNumberOfPages,
+				startRow = (pageNumber - 1) * rowsPerOnePage + 1, endRow = pageNumber * rowsPerOnePage,
+				prevBlock = startPage - pagesPerOneBlock, nextBlock = startPage + pagesPerOneBlock;
+		HashMap<String, Object> param = new HashMap<>();
 		switch (action) {
 		case "move":
-			System.out.println("BoardService에서 가져온 count: "+service.numberOfArticles());
-			request.setAttribute("count", service.numberOfArticles());
-			System.out.println("BoardController count: "+request.getAttribute("count"));
-			bean.setSeqNo("1");
-			bean=service.findArticle(bean);
-			request.setAttribute("seqNo", bean.getSeqNo());
-			request.setAttribute("title", bean.getTitle());
-			request.setAttribute("content", bean.getContent());
-			request.setAttribute("writer", bean.getWriter());
-			request.setAttribute("regiDate", bean.getRegiDate());
-			request.setAttribute("hitCounts", bean.getHitCount());
-			request.getRequestDispatcher(view).forward(request, response);
+			request
+			.getRequestDispatcher(VIEW_DIRECTORY + directory + "/" + pageName + ".jsp")
+			.forward(request, response);
 			break;
 
 		case "write":
 			System.out.println("controller write entered!!!");
 			String writer=request.getParameter("writer");
-			String regiDate=request.getParameter("regiDate");
+			System.out.println("controller write writer from UI: "+writer);
 			title=request.getParameter("title");
+			System.out.println("controller write title from UI: "+title);
 			content=request.getParameter("content");
+			System.out.println("controller write content from UI: "+content);
 			bean.setWriter(writer);
-			bean.setRegiDate(regiDate);
 			bean.setTitle(title);
 			bean.setContent(content);
 			service.writeArticle(bean);
+			System.out.println("controller write bean toString(): "+bean.toString());
+			request.setAttribute("writer", bean.getWriter());
 			request.setAttribute("title", bean.getTitle());
 			request.setAttribute("content", bean.getContent());
-			request.setAttribute("writer", bean.getWriter());
-			request.setAttribute("regiDate", bean.getRegiDate());
-			request.getRequestDispatcher(view).forward(request, response);
+			request.setAttribute("seqNo", bean.getSeqNo());
+			System.out.println("########################S");
+			/*request
+			.getRequestDispatcher(VIEW_DIRECTORY + directory + "/"+pageName+".jsp")
+			.forward(request, response);*/
+			response.sendRedirect("board.do?action=detail&pageName=detail");
+			break;
 			
+		case "detail":
+			System.out.println("CONTROLLER DETAIL ENTER !!");
+			
+			break;
 		case "update":
 			System.out.println("controller update entered ");
 			title=request.getParameter("title");
@@ -80,52 +99,33 @@ public class BoardController extends HttpServlet {
 			service.updateArticle(bean);
 			request.setAttribute("title", bean.getTitle());
 			request.setAttribute("content", bean.getContent());
-			request.getRequestDispatcher(view).forward(request, response);
+			request.getRequestDispatcher(VIEW_DIRECTORY + directory + "/" + pageName + ".jsp").forward(request, response);
 			break;
 			
 		case "delete":
 			System.out.println("delete entered form controller");
-			String deleteObect=request.getParameter("deleteObject");
-			bean.setSeqNo(deleteObect);
-			bean=service.deleteArticle(bean);
-			System.out.println("삭제 완료");
 			request.setAttribute("title", bean.getTitle());
 			request.setAttribute("content", bean.getContent());
 			request.setAttribute("writer", bean.getWriter());
 			request.setAttribute("regiDate", bean.getRegiDate());
-			request.getRequestDispatcher(view).forward(request, response);
+			String deleteObject=bean.getSeqNo();
+			request.setAttribute("seqNo", deleteObject);
+			System.out.println("삭제 될 seq_no: "+deleteObject);
+			bean.setSeqNo(deleteObject);
+			bean=service.deleteArticle(bean);
+			request
+			.getRequestDispatcher(VIEW_DIRECTORY + directory + "/" + pageName + ".jsp")
+			.forward(request, response);
 			break;	
 			
 		case "list":
 			System.out.println("controller list enter");
-		     int pageNumber=Integer.parseInt(request.getParameter("pageNumber")),
-			    		pagesPerOneBlock=5,
-			    		rowsPerOnePage=5,
-			    		theNumberOfRows=service.numberOfArticles(),
-			    		theNumberOfPages=(theNumberOfRows%rowsPerOnePage==0)?theNumberOfRows/rowsPerOnePage:theNumberOfRows/rowsPerOnePage+1,
-			    		startPage=pageNumber-((pageNumber-1)%pagesPerOneBlock),
-			    		endPage=((startPage+rowsPerOnePage-1) < theNumberOfPages)?startPage+pagesPerOneBlock-1:theNumberOfPages,
-			    		startRow=(pageNumber-1)*rowsPerOnePage+1,
-			    		endRow= pageNumber*rowsPerOnePage,
-			    	    prevBlock= startPage-pagesPerOneBlock,
-			    	    nextBlock=startPage+pagesPerOneBlock;
-		     		
-			    	System.out.println("controller pagesPerOneBlock"+pagesPerOneBlock);
-			    	System.out.println("controller theNumberOfRows"+theNumberOfRows);
-			    	System.out.println("controller theNumberOfPages "+theNumberOfPages);
-			    	System.out.println("controller startPage"+ startPage);
-			    	System.out.println("controller endPage"+endPage);
-			    	System.out.println("controller startRow"+startRow);
-			    	System.out.println("controller endRow"+endRow);
-			    	System.out.println("controller prevBlock"+prevBlock);
-			    	System.out.println("controller nextBlock"+nextBlock);
-			    	Map<String, Object> paramMap = new HashMap<>();
-			    	java.util.List<ArticleBean> list=new ArrayList<>();
+			java.util.List<ArticleBean> list=new ArrayList<>();
 			/*param.put("pageNumber", pageNumber);
 			param.put("totalCount",String.valueOf(theNumberOfRows));*/
-			    	paramMap.put("startRow", startRow);
-			    	paramMap.put("endRow", endRow);
-			    	list=service.list(paramMap);
+			param.put("startRow", startRow);
+			param.put("endRow", endRow);
+			    list=service.list(param);
 			request.setAttribute("pagesPerOneBlock", pagesPerOneBlock);
 			request.setAttribute("rowsPerOnePage", rowsPerOnePage);
 			request.setAttribute("theNumberOfRows", theNumberOfRows);
@@ -139,76 +139,85 @@ public class BoardController extends HttpServlet {
 			request.setAttribute("nextBlock", nextBlock);
 			request.setAttribute("list", list);
 			request.setAttribute("count", service.numberOfArticles());
-			request.getRequestDispatcher(view).forward(request, response);
+			request
+			.getRequestDispatcher(VIEW_DIRECTORY + directory + "/list.jsp")
+			.forward(request, response);
+		
 			break;
 			
 		case "search":
 			String option=request.getParameter("searchOption");
-			  int pageNumber1=Integer.parseInt(request.getParameter("pageNumber")),
-			    		pagesPerOneBlock1=5,
-			    		rowsPerOnePage1=5,
-			    		theNumberOfRows1=service.numberOfArticles(),
-			    		theNumberOfPages1=(theNumberOfRows1%rowsPerOnePage1==0)?theNumberOfRows1/rowsPerOnePage1:theNumberOfRows1/rowsPerOnePage1+1,
-			    		startPage1=pageNumber1-((pageNumber1-1)%pagesPerOneBlock1),
-			    		endPage1=((startPage1+rowsPerOnePage1-1) < theNumberOfPages1)?startPage1+pagesPerOneBlock1-1:theNumberOfPages1,
-			    		startRow1=(pageNumber1-1)*rowsPerOnePage1+1,
-			    		endRow1= pageNumber1*rowsPerOnePage1,
-			    	    prevBlock1= startPage1-pagesPerOneBlock1,
-			    	    nextBlock1=startPage1+pagesPerOneBlock1;
 				Map<String, Object> searchMap = new HashMap<>();
-			
+				String searchWord=request.getParameter("searchWord");
 			if(option.equals("searchByName")){
 				System.out.println("controller searchByName entered");
-				
-				 /*   	System.out.println("controller pagesPerOneBlock"+pagesPerOneBlock1);
-				    	System.out.println("controller theNumberOfRows"+theNumberOfRows1);
-				    	System.out.println("controller theNumberOfPages "+theNumberOfPages1);
-				    	System.out.println("controller startPage"+ startPage1);
-				    	System.out.println("controller endPage"+endPage1);
-				    	System.out.println("controller startRow"+startRow1);
-				    	System.out.println("controller endRow"+endRow1);
-				    	System.out.println("controller prevBlock"+prevBlock1);
-				    	System.out.println("controller nextBlock"+nextBlock1);*/
-			
-			
-				String searchWriter=request.getParameter("searchWord");
-				System.out.println("controller searchWriter"+ searchWriter);
-				searchMap.put("writer", searchWriter);
-				searchMap.put("startRow", startRow1);
-				searchMap.put("endRow", endRow1);
+				System.out.println("controller searchWriter"+ searchWord);
+				searchMap.put("searchType", "writer");
+				searchMap.put("searchWord", searchWord);
+				searchMap.put("startRow", startRow);
+				searchMap.put("endRow", endRow);
 				java.util.List<ArticleBean> searchList=new ArrayList<>();
 				System.out.println("controller map writer: "+ searchMap.toString());
 				searchList=service.searchByName(searchMap);
 				System.out.println("controller searchList: "+ searchList.toString());
 				request.setAttribute("count", service.numberOfResults(searchMap));
+				param.put("startRow", startRow);
+				param.put("endRow", endRow);
+				    list=service.list(param);
+				request.setAttribute("pagesPerOneBlock", pagesPerOneBlock);
+				request.setAttribute("rowsPerOnePage", rowsPerOnePage);
+				request.setAttribute("theNumberOfRows", theNumberOfRows);
+				request.setAttribute("theNumberOfPages", theNumberOfPages);
+				request.setAttribute("pageNumber", pageNumber);
+				request.setAttribute("startPage", startPage);
+				request.setAttribute("endPage", endPage);
+				request.setAttribute("startRow", startRow);
+				request.setAttribute("endRow", endRow);
+				request.setAttribute("prevBlock", prevBlock);
+				request.setAttribute("nextBlock", nextBlock);
 				request.setAttribute("list", searchList);
-				request.getRequestDispatcher(view).forward(request, response);
+				request.getRequestDispatcher(VIEW_DIRECTORY + directory + "/list.jsp").forward(request, response);
 				break;
 			}else if(option.equals("searchByTitle")){
 				System.out.println("controller searchByTitle entered");
-			
-				    	System.out.println("controller pagesPerOneBlock"+pagesPerOneBlock1);
-				    	System.out.println("controller theNumberOfRows"+theNumberOfRows1);
-				    	System.out.println("controller theNumberOfPages "+theNumberOfPages1);
-				    	System.out.println("controller startPage"+ startPage1);
-				    	System.out.println("controller endPage"+endPage1);
-				    	System.out.println("controller startRow"+startRow1);
-				    	System.out.println("controller endRow"+endRow1);
-				    	System.out.println("controller prevBlock"+prevBlock1);
-				    	System.out.println("controller nextBlock"+nextBlock1);
-				String searchTitle=request.getParameter("searchWord");
-				System.out.println("controller searchTitle"+ searchTitle);
-				searchMap.put("title", searchTitle);
+				    	System.out.println("controller pagesPerOneBlock"+pagesPerOneBlock);
+				    	System.out.println("controller theNumberOfRows"+theNumberOfRows);
+				    	System.out.println("controller theNumberOfPages "+theNumberOfPages);
+				    	System.out.println("controller startPage"+ startPage);
+				    	System.out.println("controller endPage"+endPage);
+				    	System.out.println("controller startRow"+startRow);
+				    	System.out.println("controller endRow"+endRow);
+				    	System.out.println("controller prevBlock"+prevBlock);
+				    	System.out.println("controller nextBlock"+nextBlock);
+				System.out.println("controller searchTitle"+ searchWord);
+				searchMap.put("searchType", "title");
+				searchMap.put("searchWord", searchWord);
 				System.out.println("controller searchMap title: "+searchMap.toString());
-				searchMap.put("startRow", startRow1);
-				searchMap.put("endRow", endRow1);
+				searchMap.put("startRow", startRow);
+				searchMap.put("endRow", endRow);
 				java.util.List<ArticleBean> searchListTitle=new ArrayList<>();
 				System.out.println("controller map title: "+ searchMap.toString());
 				searchListTitle=service.searchByTitle(searchMap);
 				System.out.println("controller searchList: "+ searchListTitle.toString());
 				request.setAttribute("count", service.numberOfResults(searchMap));
+				param.put("startRow", startRow);
+				param.put("endRow", endRow);
+				    list=service.list(param);
+				request.setAttribute("pagesPerOneBlock", pagesPerOneBlock);
+				request.setAttribute("rowsPerOnePage", rowsPerOnePage);
+				request.setAttribute("theNumberOfRows", theNumberOfRows);
+				request.setAttribute("theNumberOfPages", theNumberOfPages);
+				request.setAttribute("pageNumber", pageNumber);
+				request.setAttribute("startPage", startPage);
+				request.setAttribute("endPage", endPage);
+				request.setAttribute("startRow", startRow);
+				request.setAttribute("endRow", endRow);
+				request.setAttribute("prevBlock", prevBlock);
+				request.setAttribute("nextBlock", nextBlock);
 				request.setAttribute("list", searchListTitle);
-				request.getRequestDispatcher(view).forward(request, response);
+				request
+				.getRequestDispatcher(VIEW_DIRECTORY + directory + "/" + pageName + ".jsp")
+				.forward(request, response);
 				break;
 			}else{System.out.println("Message for developer only");}
 		}

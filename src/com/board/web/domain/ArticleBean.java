@@ -55,8 +55,8 @@ public class ArticleBean {
 		return regiDate;
 	}
 
-	public void setRegiDate(String regiDate) {
-		this.regiDate = regiDate;
+	public String setRegiDate(String regiDate) {
+		return this.regiDate = regiDate;
 	}
 
 	public String getHitCount() {

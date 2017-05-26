@@ -1,7 +1,8 @@
 package com.board.web.serviceImpl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,12 @@ public class BoardServiceImpl implements BoardService {
 	 
 	@Override
 	public void writeArticle(ArticleBean article) {
-		dao.insertArticle(article);
+		 Calendar cal = Calendar.getInstance();
+		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		 System.out.println( sdf.format(cal.getTime()) );
+		 String currentTime=sdf.format(cal.getTime());
+		 article.setRegiDate(currentTime);
+		 dao.insertArticle(article);
 	}
 
 	@Override
@@ -56,6 +62,7 @@ public class BoardServiceImpl implements BoardService {
 	public ArticleBean deleteArticle(ArticleBean article) {
 	return dao.deleteArticle(article);
 	}
+
 	@Override
 	public List<ArticleBean> searchByName(Map<String, Object> paramMap){
 		System.out.println("service 진입@@searchByName@@");
@@ -76,4 +83,5 @@ public class BoardServiceImpl implements BoardService {
 		System.out.println("searchByTitle: "+rsListByTitle.toString());
 		return rsListByTitle;
 	}
+
 }

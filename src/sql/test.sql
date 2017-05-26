@@ -1,5 +1,5 @@
 DROP TABLE Board;
-
+select * FROM Board; WHERE title='훈민정음' AND wrtier='이도';
 CREATE TABLE Board(
 	seq_no INTEGER AUTO_INCREMENT NOT NULL,
 	title varchar(50) null,
@@ -9,11 +9,7 @@ CREATE TABLE Board(
 	count varchar(50) default 0 not null,
 	primary key (seq_no)
 )DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-
-drop table Board;
-select * from Board;
-SELECT seq_no,title,writer,regi_date,count FROM Board WHERE seq_no='1';
-SELECT seq_no,title,writer,regi_date,count FROM Board WHERE seq_no='1';
+ALTER TABLE Board ADD file VARCHAR(100) null;
 
 INSERT INTO Board(title,content,writer,regi_date,count) VALUES('인생','살 무엇을 얼마나','정만호','2017-05-11','13');
 INSERT INTO Board(title,content,writer,regi_date,count) VALUES('봄바람','뼈 쓸쓸한 인생에 곧 있다','홍길동','2017-05-10','11');
