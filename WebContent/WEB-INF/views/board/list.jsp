@@ -62,7 +62,7 @@
 		<ul class="pagination">
 		<c:if test="${requestScope.prevBlock  gt 0}">
 		<li>
-			<a href="${context}/board.do?action=list&pageName=main&pageNumber=${requestScope.prevBlock}">&laquo;</a>
+			<a href="${context}/board.do?action=${requestScope.actionType}&pageName=list&pageNumber=${requestScope.prevBlock}">&laquo;</a>
 		</li>
 		</c:if>
 		<c:forEach varStatus="i" begin="${requestScope.startPage}" end="${requestScope.endPage}"
@@ -73,14 +73,14 @@
 					<a href="#"><font style="color:red">${i.index}</font></a>
 				</c:when>
 				<c:otherwise>
-					<a href="${context}/board.do?action=list&pageName=main&pageNumber=${i.index}">${i.index}</a>
+					<a href="${context}/board.do?action=${requestScope.actionType}&pageName=main&pageNumber=${i.index}">${i.index}</a>
 				</c:otherwise>
 			</c:choose>
 			</li>
 		</c:forEach>
 		<c:if test="${requestScope.nextBlock  le theNumberOfPages}">
 		<li>
-			<a href="${context}/board.do?action=list&pageName=main&pageNumber=${requestScope.nextBlock}">&raquo;</a>
+			<a href="${context}/board.do?action=${requestScope.actionType}&pageName=main&pageNumber=${requestScope.nextBlock}">&raquo;</a>
 		</li>
 		</c:if>
 		</ul>
@@ -96,7 +96,7 @@
 <span>startRow: ${requestScope.startRow}</span><br />
 <span>endRow: ${requestScope.endRow}</span><br />
 <span>prevBlock: ${requestScope.prevBlock}</span><br />
-
+<span>actionType: ${requestScope.actionType}</span>
 
 
 

@@ -139,6 +139,7 @@ public class BoardController extends HttpServlet {
 			request.setAttribute("nextBlock", nextBlock);
 			request.setAttribute("list", list);
 			request.setAttribute("count", service.numberOfArticles());
+			request.setAttribute("actionType", "list");
 			request
 			.getRequestDispatcher(VIEW_DIRECTORY + directory + "/list.jsp")
 			.forward(request, response);
@@ -176,6 +177,7 @@ public class BoardController extends HttpServlet {
 				request.setAttribute("prevBlock", prevBlock);
 				request.setAttribute("nextBlock", nextBlock);
 				request.setAttribute("list", searchList);
+				request.setAttribute("actionType", "search");
 				request.getRequestDispatcher(VIEW_DIRECTORY + directory + "/list.jsp").forward(request, response);
 				break;
 			}else if(option.equals("searchByTitle")){
@@ -214,6 +216,7 @@ public class BoardController extends HttpServlet {
 				request.setAttribute("endRow", endRow);
 				request.setAttribute("prevBlock", prevBlock);
 				request.setAttribute("nextBlock", nextBlock);
+				request.setAttribute("actionType", "search");
 				request.setAttribute("list", searchListTitle);
 				request
 				.getRequestDispatcher(VIEW_DIRECTORY + directory + "/" + pageName + ".jsp")

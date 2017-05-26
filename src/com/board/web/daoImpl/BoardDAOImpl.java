@@ -180,7 +180,7 @@ public class BoardDAOImpl implements BoardDAO {
 			Class.forName(DRIVER);
 			Connection connection=DriverManager.getConnection(URL,USER,PW);
 			Statement stmt=connection.createStatement();
-			String sql="DELETE  FROM Board WHERE writer='"+article.getSeqNo()+"'";
+			String sql="DELETE  FROM Board WHERE seq_no='"+article.getSeqNo()+"'";
 			System.out.println("DAO DELETE seq_no: "+ article.getSeqNo());
 			stmt.executeUpdate(sql);
 		} catch (Exception e) {
@@ -204,7 +204,7 @@ public class BoardDAOImpl implements BoardDAO {
 			System.out.println("@@@2DAO starRow"+ startRow);
 			String endRow=String.valueOf(paramMap.get("endRow"));
 			System.out.println("@@@DAO endRow: "+ endRow);
-			String sql2=
+			String sql=
 					"SELECT * "
 					+"FROM ( "
 					+"SELECT @NO := @NO + 1 AS ROWNUM, A.* "
@@ -217,7 +217,7 @@ public class BoardDAOImpl implements BoardDAO {
 					+"WHERE C.ROWNUM BETWEEN "+startRow+" AND "+endRow+"";
 					
 			System.out.println("DAO searchByName writer: " + writer);
-			ResultSet rs= stmt.executeQuery(sql2);
+			ResultSet rs= stmt.executeQuery(sql);
 			
 			while(rs.next()){
 				bean = new ArticleBean();
@@ -250,8 +250,20 @@ public class BoardDAOImpl implements BoardDAO {
 			Statement stmt=connection.createStatement();
 			String title=(String) searchByTitleMap.get("searchWord");
 			System.out.println("DAO seachByTitleMap : "+searchByTitleMap.toString());
-			String sql="SELECT * FROM Board WHERE title LIKE '%"+title+"%'";
-			//String sql2="SELECT * FROM Board WHERE writer LIKE '%"+writer+"%'";
+			String startRow=String.valueOf(paramMap.get("startRow"));
+			System.out.println("@@@2DAO starRow"+ startRow);
+			String endRow=String.valueOf(paramMap.get("endRow"));
+			String sql=
+					"SELECT * "
+					+"FROM ( "
+					+"SELECT @NO := @NO + 1 AS ROWNUM, A.* "
+					+"FROM"
+					+"  ("
+					+"   SELECT * FROM Board WHERE title LIKE '%"+title+"%'"
+					+"  ) A,"
+					+"  ( SELECT @NO := 0 ) B" 
+					+") C "
+					+"WHERE C.ROWNUM BETWEEN "+startRow+" AND "+endRow+"";
 			System.out.println("DAO searchByTitle title: "+title);
 			ResultSet rs=stmt.executeQuery(sql);
 			while(rs.next()){
