@@ -161,17 +161,27 @@ public class BoardDAOImpl implements BoardDAO {
 		return listSome;
 	}
 	@Override
-	public void updateArticle(ArticleBean article) {
+	public ArticleBean updateArticle(ArticleBean article) {
+		ArticleBean bean =new ArticleBean();
+		System.out.println("DAO updateArticle  entered@@@@@@@@");
 		try {
 			Class.forName(DRIVER);
 			Connection connection=DriverManager.getConnection(URL,USER,PW);
 			Statement stmt=connection.createStatement();
-			String sql="UPDATE Board SET title='"+article.getTitle()+"',content='"+article.getContent()+"' WHERE seq_no='"+article.getSeqNo()+"'";
+			String updateTitle=article.getTitle();
+			String updateContent=article.getContent();
+			String updateSeqNo=article.getSeqNo();
+			System.out.println("DAO updateArticle title: "+updateTitle);
+			System.out.println("DAO updateArticle content: "+updateContent);
+			System.out.println("DAO updateAricle seqNo: "+ updateSeqNo);
+			String sql="UPDATE Board SET title='"+updateTitle+"',content='"+updateContent+"' WHERE seq_no='"+updateSeqNo+"'";
 			stmt.executeUpdate(sql);
+			
 		} catch (Exception e) {
 			System.out.println("에러 발생:");
 			e.printStackTrace();
 		}
+		return bean;
 	}
 	@Override
 	public ArticleBean deleteArticle(ArticleBean article) {

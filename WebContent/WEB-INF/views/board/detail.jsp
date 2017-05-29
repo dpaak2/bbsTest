@@ -4,15 +4,16 @@
 <!doctype html>
 <html lang="en">
 
-<head><jsp:include page="header.jsp"/>
-	<title>디테일 페이지</title>
+<head>
+<title>디테일 페이지</title>
+<jsp:include page="header.jsp"/>
 </head>
 <body>
 <div class="container-fluid" style="width:80%">
 <jsp:include page="navbar.jsp"/>
 <h1>ARTICLE DETAIL</h1>
 	
-	<input type="text" name="writer" style="margin-top:20px" class="form-control" value="${requestScope.writer}" />
+	<input type="text" name="writer" style="margin-top:20px" class="form-control" value="${requestScope.writer}"/>
 	<input type="text" name="title" style="margin-top:20px" class="form-control" value="${requestScope.title}"/><br />
 	    <div class="row">
 		    <div style="width:97%; margin:10px auto" >
@@ -26,7 +27,9 @@
 	    	<input type="hidden" name="seqNo" value="${seqNo}"/>
 	    	</form>
 		<a href="${context}/board.do?action=update&pageName=upload"><input type="button" class="btn btn-warning" style="float:right;width:100px;margin-right:10px" value="UPLOAD"/></a>
-	<a href="${context}/board.do?action=update&pageName=update"><input type="button" class="btn btn-success" style="float:right;width:100px;margin-right:10px" value="UPDATE"/></a>
+	<a href="${context}/board.do?action=update&pageName=update&seqNo=${seqNo}"><input type="button" class="btn btn-success" style="float:right;width:100px;margin-right:10px" value="UPDATE"/></a>
+
+
 </div>
 
 </body>

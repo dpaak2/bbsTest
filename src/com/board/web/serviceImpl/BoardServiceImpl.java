@@ -53,9 +53,11 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public void updateArticle(ArticleBean article) {
+	public ArticleBean updateArticle(ArticleBean article) {
+		ArticleBean bean=new ArticleBean();
 		System.out.println("service 진입@@updateArticle@@");
-		dao.updateArticle(article);
+		bean=dao.updateArticle(article);
+		return bean;
 	}
 
 	@Override

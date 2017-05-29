@@ -99,15 +99,23 @@ public class BoardController extends HttpServlet {
 			break;
 		case "update":
 			System.out.println("controller update entered ");
+			bean=new ArticleBean();
+			String updateSeqNo=request.getParameter("seqNo");
+			System.out.println("update seqNO controller: "+ updateSeqNo);
 			title=request.getParameter("title");
 			content=request.getParameter("content");
-			String updateSubject=request.getParameter("updateSubject");
-			bean.setSeqNo(updateSubject);
+			System.out.println("controller update befor go to dao title "+title);
+			System.out.println("controller update befor go to dao content "+content);
 			bean.setTitle(title);
 			bean.setContent(content);
-			service.updateArticle(bean);
+			bean.setSeqNo(updateSeqNo);
 			request.setAttribute("title", bean.getTitle());
 			request.setAttribute("content", bean.getContent());
+			System.out.println("controller update title: "+bean.getTitle());
+			System.out.println("controller update content: "+bean.getContent());
+			request.setAttribute("seqNo", updateSeqNo);
+			System.out.println("삭제 될 seq_no: "+updateSeqNo);
+			bean=service.updateArticle(bean);
 			request.getRequestDispatcher(VIEW_DIRECTORY + directory + "/" + pageName + ".jsp").forward(request, response);
 			break;
 			

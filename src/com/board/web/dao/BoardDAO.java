@@ -14,7 +14,7 @@ public interface BoardDAO {
 	public List<ArticleBean> list(Map<String, Object> paramMap);
 	public List<ArticleBean> searchByName(Map<String, Object> paramMap);
 	public List<ArticleBean> searchByTitle(Map<String, Object>paramMap);
-	public void updateArticle(ArticleBean article);
+	public ArticleBean updateArticle(ArticleBean article);
 	public ArticleBean deleteArticle(ArticleBean article);
 	
 }

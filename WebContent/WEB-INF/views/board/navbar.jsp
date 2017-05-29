@@ -4,6 +4,6 @@
 </button>
 <script>
 document.querySelector(".home").addEventListener('click',function(){
-	location.href='<%=application.getContextPath()%>/board.do';
+	location.href='<%=application.getContextPath()%>/board.do?action=list&pageName=list&pageNumber=1';
 });
 </script>

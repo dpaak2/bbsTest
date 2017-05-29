@@ -12,17 +12,19 @@
 		<jsp:include page="navbar.jsp" />
 		<h1>ARTICLE UPDATE</h1>
 		<form action="${context}/board.do">
-			<input class="hanbit-title" type="text" name="title" placeholder="제목" /><br />
+			<input class="hanbit-title" type="text" name="title" placeholder="${requestScope.title}" /><br />
 		 <div class="row">
 		    <div style="width:97%; margin:10px auto" >
-	      		<textarea class="form-control" rows="20" id="comment"></textarea>
+	      		<textarea name="content" class="form-control" rows="20" id="comment" placeholder="${requestScope.content}"></textarea>
 		    </div>
 	    </div>
 	    
 	    
 	   	<a href="${context}/board.do?action=move&pageName=detail"><input type="submit" class="btn btn-danger" style="float:right;width:100px;margin-right:10px" value="CANCEL"/></a> 
-		<a href="${context}/board.do?action=update&pageName=detail"><input type="submit" class="btn btn-primary" style="float:right;width:100px;margin-right:10px" value="SUBMIT"/></a>						
-		
+		<input type="submit" name="update" class="btn btn-primary" style="float:right;width:100px;margin-right:10px" value="SUBMIT"/>					
+		<input type="hidden"  name="action" value="update"/>
+		<input type="hidden" name="pageName" value="detail" />
+		<input type="hidden" name="seqNo" value="${seqNo}" />
 		</form>
 
 	</div>
