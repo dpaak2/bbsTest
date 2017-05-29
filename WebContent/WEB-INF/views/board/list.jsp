@@ -49,7 +49,7 @@
 	<c:forEach var="article" items="${requestScope.list}">
 		<tr>
 			<td>${article.seqNo}</td>
-			<td><a href="${context}/board.do?action=searchBySeq&pageName=detail${article.seqNo}">${article.title}</a></td>
+			<td><a href="${context}/board.do?action=detail&pageName=detail&seqNo=${article.seqNo}">${article.title}</a></td>
 			<td>${article.content}</td>
 			<td>${article.writer}</td>
 			<td>${article.regiDate}</td>
@@ -97,7 +97,7 @@
 <span>endRow: ${requestScope.endRow}</span><br />
 <span>prevBlock: ${requestScope.prevBlock}</span><br />
 <span>actionType: ${requestScope.actionType}</span>
-
+<span>seNO: ${article.seqNo}</span>
 
 
 </body>

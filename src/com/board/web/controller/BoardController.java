@@ -86,7 +86,16 @@ public class BoardController extends HttpServlet {
 			
 		case "detail":
 			System.out.println("CONTROLLER DETAIL ENTER !!");
-			
+			bean=new ArticleBean();
+			String seqNo=request.getParameter("seqNo");
+			System.out.println("detial seqNO: "+ seqNo);
+			bean.setSeqNo(seqNo);
+			bean= service.findArticle(bean);
+			request.setAttribute("seqNo", bean.getSeqNo());
+			request.setAttribute("writer", bean.getWriter());
+			request.setAttribute("title", bean.getTitle());
+			request.setAttribute("content", bean.getContent());
+			request.getRequestDispatcher(VIEW_DIRECTORY + directory + "/" + pageName + ".jsp").forward(request, response);
 			break;
 		case "update":
 			System.out.println("controller update entered ");
@@ -103,15 +112,17 @@ public class BoardController extends HttpServlet {
 			break;
 			
 		case "delete":
-			System.out.println("delete entered form controller");
+			System.out.println("delete entered from controller");
+			bean=new ArticleBean();
+			String deleteSeqNo=request.getParameter("seqNo");
+			System.out.println("delete seqNO controller: "+ deleteSeqNo);
 			request.setAttribute("title", bean.getTitle());
 			request.setAttribute("content", bean.getContent());
 			request.setAttribute("writer", bean.getWriter());
 			request.setAttribute("regiDate", bean.getRegiDate());
-			String deleteObject=bean.getSeqNo();
-			request.setAttribute("seqNo", deleteObject);
-			System.out.println("삭제 될 seq_no: "+deleteObject);
-			bean.setSeqNo(deleteObject);
+			request.setAttribute("seqNo", deleteSeqNo);
+			System.out.println("삭제 될 seq_no: "+deleteSeqNo);
+			bean.setSeqNo(deleteSeqNo);
 			bean=service.deleteArticle(bean);
 			request
 			.getRequestDispatcher(VIEW_DIRECTORY + directory + "/" + pageName + ".jsp")
