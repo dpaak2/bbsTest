@@ -9,6 +9,7 @@ import com.board.web.domain.ArticleBean;
 public interface BoardDAO {
 	public void insertArticle(ArticleBean article);
 	public int countArticles();
+	public int lastInsertedSeqno();
 	public int searchCount(Map<String, Object> paramMap);
 	public ArticleBean selectArticle(ArticleBean article);
 	public List<ArticleBean> list(Map<String, Object> paramMap);
@@ -16,5 +17,4 @@ public interface BoardDAO {
 	public List<ArticleBean> searchByTitle(Map<String, Object>paramMap);
 	public ArticleBean updateArticle(ArticleBean article);
 	public ArticleBean deleteArticle(ArticleBean article);
-	
 }

@@ -78,11 +78,11 @@
 			</c:choose>
 			</li>
 		</c:forEach>
-		<c:if test="${requestScope.nextBlock  le theNumberOfPages}">
+		 <c:if test="${nextBlock  le theNumberOfPages}"> 
 		<li>
 			<a href="${context}/board.do?action=${requestScope.actionType}&pageName=main&pageNumber=${requestScope.nextBlock}">&raquo;</a>
 		</li>
-		</c:if>
+		</c:if> 
 		</ul>
 	</nav> 
 
@@ -96,6 +96,7 @@
 <span>startRow: ${requestScope.startRow}</span><br />
 <span>endRow: ${requestScope.endRow}</span><br />
 <span>prevBlock: ${requestScope.prevBlock}</span><br />
+<span>nextBlock: ${requestScope.nextBlock}</span><br />
 <span>actionType: ${requestScope.actionType}</span>
 <span>seNO: ${article.seqNo}</span>
 

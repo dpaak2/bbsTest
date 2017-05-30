@@ -320,5 +320,10 @@ public class BoardDAOImpl implements BoardDAO {
 		System.out.println("DAO searchCount: "+ searchCount);
 		return searchCount;
 	}
+	@Override
+	public int lastInsertedSeqno() {
+	
+		return 0;
+	}
 
 }
