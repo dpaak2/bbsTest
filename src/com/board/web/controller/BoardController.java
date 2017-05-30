@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.board.web.domain.ArticleBean;
 import com.board.web.service.BoardService;
@@ -33,6 +34,7 @@ public class BoardController extends HttpServlet {
 			throws ServletException, IOException {
 		BoardService service =BoardServiceImpl.getInstance();
 		PaginationService pService=new PaginationServiceImpl();
+		HttpSession session= request.getSession();
 		ArticleBean bean=new ArticleBean(); 
 	    String 	path=request.getServletPath(),
 	    		directory =path.substring(0,path.indexOf(".")),
@@ -146,7 +148,6 @@ public class BoardController extends HttpServlet {
 			param.put("endRow", rowsValues[1]);
 			System.out.println("controller list param.get(startRow)"+param.get("startRow"));
 			System.out.println("controller list param.get(endRow)"+param.get("endRow"));
-		/*	pService.calculateRows(params);*/
 			list=service.list(param);
 			request.setAttribute("pagesPerOneBlock", params[3]);
 			request.setAttribute("rowsPerOnePage", params[2]);
@@ -167,13 +168,21 @@ public class BoardController extends HttpServlet {
 			request
 			.getRequestDispatcher(VIEW_DIRECTORY + directory + "/list.jsp")
 			.forward(request, response);
-		
 			break;
 			
 		case "search":
 			String option=request.getParameter("searchOption");
+			String searchWord=request.getParameter("searchWord");
+			if(option!=null){
+				session.setAttribute("option", option);
+				session.setAttribute("searchWord",searchWord);
+			}else{
+				option= (String) session.getAttribute("option");
+				searchWord= (String) session.getAttribute("searchWord");
+			}
+		System.out.println("controller option: "+ option);
 				Map<String, Object> searchMap = new HashMap<>();
-				String searchWord=request.getParameter("searchWord");
+			
 			if(option.equals("searchByName")){
 				System.out.println("controller searchByName entered");
 				System.out.println("controller searchWriter"+ searchWord);
@@ -203,46 +212,28 @@ public class BoardController extends HttpServlet {
 				request.setAttribute("prevBlock", rowsValues[4]);
 				request.setAttribute("nextBlock",  rowsValues[5]);
 				request.setAttribute("list", searchList);
-				request.setAttribute("count", service.numberOfResults(searchMap));
 				request.setAttribute("actionType", "search");
 				request.getRequestDispatcher(VIEW_DIRECTORY + directory + "/list.jsp").forward(request, response);
 				break;
 			}else if(option.equals("searchByTitle")){
 				System.out.println("controller searchByTitle entered");
+				searchMap.put("searchType", "title");
+				searchMap.put("searchWord", searchWord);
 				params[0]=pageNumber;
 				params[1]=String.valueOf(service.numberOfResults(searchMap));
 				params[2]="5";
 				params[3]="5";
 				rowsValues=pService.calculateRows(params);
-				searchMap.put("searchType", "title");
-				searchMap.put("searchWord", searchWord);
 				searchMap.put("startRow",  rowsValues[0]);
 				searchMap.put("endRow",  rowsValues[1]);
-				
-				    	System.out.println("controller pagesPerOneBlock"+params[3]);
-				    	System.out.println("controller theNumberOfRows"+params[1]);
-				    	System.out.println("controller theNumberOfPages "+params[2]);
-				    	System.out.println("controller startPage"+ rowsValues[2]);
-				    	System.out.println("controller endPage"+rowsValues[3]);
-				    	System.out.println("controller startRow"+rowsValues[0]);
-				    	System.out.println("controller endRow"+rowsValues[1]);
-				    	System.out.println("controller prevBlock"+rowsValues[4]);
-				    	System.out.println("controller nextBlock"+rowsValues[5]);
 				System.out.println("controller searchTitle"+ searchWord);
-				searchMap.put("searchType", "title");
-				searchMap.put("searchWord", searchWord);
-				System.out.println("controller searchMap title: "+searchMap.toString());
-				
 				List<ArticleBean> searchListTitle=new ArrayList<>();
-				
+				System.out.println("controller searchMap title: "+searchMap.toString());
 				System.out.println("controller map title: "+ searchMap.toString());
 				searchListTitle=service.searchByTitle(searchMap);
 				System.out.println("controller searchList: "+ searchListTitle.toString());
 				request.setAttribute("count", service.numberOfResults(searchMap));
-				param.put("startRow", rowsValues[0]);
-				param.put("endRow", rowsValues[1]);
-				    list=service.list(param);
-			   request.setAttribute("pagesPerOneBlock",  params[3]);
+    			request.setAttribute("pagesPerOneBlock",  params[3]);
 			   request.setAttribute("rowsPerOnePage", params[2]);
 			   request.setAttribute("theNumberOfRows", params[1]);
 			   request.setAttribute("theNumberOfPages", rowsValues[6]);
@@ -255,7 +246,6 @@ public class BoardController extends HttpServlet {
 		       request.setAttribute("nextBlock",  rowsValues[5]);
 		       request.setAttribute("actionType", "search");
 			   request.setAttribute("list", searchListTitle);
-			   request.setAttribute("count", service.numberOfResults(searchMap));
 			   request
 				.getRequestDispatcher(VIEW_DIRECTORY + directory + "/" + pageName + ".jsp")
 				.forward(request, response);

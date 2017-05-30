@@ -73,14 +73,14 @@
 					<a href="#"><font style="color:red">${i.index}</font></a>
 				</c:when>
 				<c:otherwise>
-					<a href="${context}/board.do?action=${requestScope.actionType}&pageName=main&pageNumber=${i.index}">${i.index}</a>
+					<a href="${context}/board.do?action=${requestScope.actionType}&pageName=list&pageNumber=${i.index}">${i.index}</a>
 				</c:otherwise>
 			</c:choose>
 			</li>
 		</c:forEach>
 		 <c:if test="${nextBlock  le theNumberOfPages}"> 
 		<li>
-			<a href="${context}/board.do?action=${requestScope.actionType}&pageName=main&pageNumber=${requestScope.nextBlock}">&raquo;</a>
+			<a href="${context}/board.do?action=${requestScope.actionType}&pageName=list&pageNumber=${requestScope.nextBlock}">&raquo;</a>
 		</li>
 		</c:if> 
 		</ul>
