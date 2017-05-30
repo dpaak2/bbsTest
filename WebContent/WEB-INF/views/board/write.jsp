@@ -12,6 +12,7 @@
 <h1>ARTICLE WRITING</h1>
 	<form action="${context}/board.do">
 <div style="width: 100%;"><h1>작성 페이지</h1></div>
+	<input type="hidden" name="seqNo" value=""/>
 	<input type="text" name="writer" style="margin-top:20px"  class="form-control" placeholder="작성자 이름" />
 	<input type="text" name="title" style="margin-top:20px" class="form-control"  placeholder="제목" /><br />
 	  <div class="row">
@@ -23,6 +24,7 @@
 	<input name="write" type="submit" class="btn btn-primary" style="float:right;width:100px;margin-right:10px" value="SUBMIT"/>
 	<input type="hidden" name="action" value="write"/>
 	<input type="hidden" name="pageName" value="detail" />
+	
 	 
 </form>
 </div>

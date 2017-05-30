@@ -322,8 +322,23 @@ public class BoardDAOImpl implements BoardDAO {
 	}
 	@Override
 	public int lastInsertedSeqno() {
-	
-		return 0;
+		int maxSeqNo=0;
+		try {
+			Class.forName(DRIVER);
+			Connection connection= DriverManager.getConnection(URL,USER,PW);
+			Statement stmt=connection.createStatement();
+			String sql="SELECT MAX(seq_no) AS maxNo FROM Board;";
+			ResultSet rs=stmt.executeQuery(sql);
+			if(rs.next()){
+				maxSeqNo=rs.getInt("maxNo");
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("DAO lastInsertedSeqNO: "+maxSeqNo);
+		return maxSeqNo;
 	}
 
 }

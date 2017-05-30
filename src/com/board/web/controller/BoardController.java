@@ -44,7 +44,7 @@ public class BoardController extends HttpServlet {
 	    		title="",
 	    		content="";
 	    action=(action == null) ? "list" : action;
-	    pageNumber=(pageNumber==null)?"0":pageNumber;
+	    pageNumber=(pageNumber==null)?"1":pageNumber;
 	  
 		System.out.println("BoardController 진입");
 		System.out.println("controller action:"+ request.getParameter("action"));
@@ -52,6 +52,7 @@ public class BoardController extends HttpServlet {
 		int[] rowsValues=new int[7];
 		
 		HashMap<String, Object> param = new HashMap<>();
+		String seqNo= String.valueOf(service.lastInsertedSeqno());
 		switch (action) {
 		case "move":
 			request
@@ -70,12 +71,13 @@ public class BoardController extends HttpServlet {
 			bean.setWriter(writer);
 			bean.setTitle(title);
 			bean.setContent(content);
+			bean.setSeqNo(seqNo);
 			service.writeArticle(bean);
 			System.out.println("controller write bean toString(): "+bean.toString());
 			request.setAttribute("writer", bean.getWriter());
 			request.setAttribute("title", bean.getTitle());
 			request.setAttribute("content", bean.getContent());
-			request.setAttribute("seqNo", bean.getSeqNo());
+			request.setAttribute("seqNo", seqNo);
 			System.out.println("########################S");
 			/*request
 			.getRequestDispatcher(VIEW_DIRECTORY + directory + "/"+pageName+".jsp")
@@ -86,14 +88,26 @@ public class BoardController extends HttpServlet {
 		case "detail":
 			System.out.println("CONTROLLER DETAIL ENTER !!");
 			bean=new ArticleBean();
-			String seqNo=request.getParameter("seqNo");
-			System.out.println("detial seqNO: "+ seqNo);
-			bean.setSeqNo(seqNo);
-			bean= service.findArticle(bean);
-			request.setAttribute("seqNo", bean.getSeqNo());
-			request.setAttribute("writer", bean.getWriter());
-			request.setAttribute("title", bean.getTitle());
-			request.setAttribute("content", bean.getContent());
+			if(seqNo==null){
+				String detailSeqNo=request.getParameter("seqNo");
+				System.out.println("detial seqNO: "+ detailSeqNo);
+				bean.setSeqNo(detailSeqNo);
+				bean= service.findArticle(bean);
+				request.setAttribute("seqNo", bean.getSeqNo());
+				request.setAttribute("writer", bean.getWriter());
+				request.setAttribute("title", bean.getTitle());
+				request.setAttribute("content", bean.getContent());
+			}else{
+				String maxNo=String.valueOf(service.lastInsertedSeqno());
+				System.out.println("detial seqNO: "+ maxNo);
+				bean.setSeqNo(maxNo);
+				bean= service.findArticle(bean);
+				request.setAttribute("seqNo", bean.getSeqNo());
+				request.setAttribute("writer", bean.getWriter());
+				request.setAttribute("title", bean.getTitle());
+				request.setAttribute("content", bean.getContent());
+			}
+			
 			request.getRequestDispatcher(VIEW_DIRECTORY + directory + "/" + pageName + ".jsp").forward(request, response);
 			break;
 		case "update":
@@ -131,9 +145,12 @@ public class BoardController extends HttpServlet {
 			System.out.println("삭제 될 seq_no: "+deleteSeqNo);
 			bean.setSeqNo(deleteSeqNo);
 			bean=service.deleteArticle(bean);
-			request
+			
+			
+			response.sendRedirect("board.do?action=list&pageName=list");
+		/*	request
 			.getRequestDispatcher(VIEW_DIRECTORY + directory + "/" + pageName + ".jsp")
-			.forward(request, response);
+			.forward(request, response);*/
 			break;	
 			
 		case "list":

@@ -85,5 +85,10 @@ public class BoardServiceImpl implements BoardService {
 		System.out.println("searchByTitle: "+rsListByTitle.toString());
 		return rsListByTitle;
 	}
+	@Override
+	public int lastInsertedSeqno() {
+		System.out.println("ServiceImpl lastInsertedSeqNo: "+dao.lastInsertedSeqno());
+		return dao.lastInsertedSeqno();
+	}
 
 }

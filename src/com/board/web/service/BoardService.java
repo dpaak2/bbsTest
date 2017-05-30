@@ -7,6 +7,7 @@ import com.board.web.domain.ArticleBean;
 public interface BoardService {
 	public void writeArticle(ArticleBean article);
 	public int numberOfArticles();
+	public int lastInsertedSeqno();
 	public int numberOfResults(Map<String, Object>paramMap);
 	public ArticleBean findArticle(ArticleBean article);
 	public List<ArticleBean> list(Map<String, Object> paramMap);

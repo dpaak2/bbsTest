@@ -53,13 +53,19 @@ FROM
 ) C
 WHERE C.ROWNUM BETWEEN 1 AND 5;
 
-
+   SELECT LAST_INSERT_ID();
 
 UPDATE Board SET title='우리들의 일그러진 영웅',content='아! 걔가 얼마나 힘을 가졌으면 반애들이 그렇게 쩔쩔 매겠니 남자는 말이야 힘이 있어야 되는거야 아! 그래야 나중에 큰 인물이 되지' WHERE seq_no='"+article.getSeqNo()+"'
 
 SELECT *FROM Board ORDER BY seq_no DESC LIMIT 0,5;
 --WHERE C.ROWNUM >= 11 AND C.ROWNUM <= 15;
 DELETE FROM Board WHERE LAST_INSERT_ID();
+
+SELECT MAX(seq_no) AS maxNo FROM Board;
+
+SELECT MAX(column) AS alias FROM $db_table_name 
+
+
 
 select * from Board WHERE seq_no='LAST_INSERT_ID()';
 DELETE  FROM Board WHERE writer='이훤' ;

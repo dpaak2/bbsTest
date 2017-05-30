@@ -50,9 +50,9 @@
 		<tr>
 			<td>${article.seqNo}</td>
 			<td><a href="${context}/board.do?action=detail&pageName=detail&seqNo=${article.seqNo}">${article.title}</a></td>
-			<td>${article.content}</td>
+			<td><a href="${context}/board.do?action=detail&pageName=detail&seqNo=${article.seqNo}">${article.content}</a></td>
 			<td>${article.writer}</td>
-			<td>${article.regiDate}</td>
+			<td><a href="${context}/board.do?action=detail&pageName=detail&seqNo=${article.seqNo}">${article.regiDate}</a></td>
 			<td>${article.hitCount}</td>
 		</tr>
 	</c:forEach>
